@@ -1,0 +1,22 @@
+{
+    "extends": ["tslint:latest", "tslint-react"],
+    "rules": {
+        "semicolon": [true, "always", "ignore-bound-class-methods"],
+        "quotemark": [
+            true,
+            "single",
+            "jsx-double",
+            "avoid-escape",
+            "avoid-template"
+        ],
+        "member-access": [false, "check-accessor"],
+        "max-line-length": [true, 100],
+        "interface-name": false,
+        "object-literal-sort-keys": false,
+        "jsx-boolean-value": [true, "never"],
+        "jsx-curly-spacing": [true, "always"],
+        "jsx-alignment": false,
+        "jsx-space-before-trailing-slash": true,
+        "jsx-no-multiline-js": false
+    }
+}
