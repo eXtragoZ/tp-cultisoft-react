@@ -22,8 +22,48 @@ const Cultivos: FC<Props> = (props) => {
         },
     ];
 
+    const actuadores: Actuador[] = [
+        {
+            id: 3,
+            descripcion: 'Manguera',
+            tipo: 'Humedad',
+            activo: true,
+        },
+        {
+            id: 53,
+            descripcion: 'Luz UV',
+            tipo: 'Luz',
+            activo: true,
+        },
+        {
+            id: 23,
+            descripcion: 'Luz Blanca',
+            tipo: 'Luz',
+            activo: false,
+        },
+    ];
+
+    const sensores: Sensor[] = [
+        {
+            id: 12,
+            tipo: 'Humedad',
+            activo: true,
+            valor: 33,
+        },
+        {
+            id: 48,
+            descripcion: 'Estufa',
+            tipo: 'Temperatura',
+            activo: true,
+            valor: 22,
+        },
+        {
+            id: 5,
+            activo: false,
+        },
+    ];
     return (
-        <Table responsive striped>
+        <Table responsive striped hover>
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -34,7 +74,8 @@ const Cultivos: FC<Props> = (props) => {
                 </tr>
             </thead>
             <tbody>
-                { cultivos.map(({ id, nombre, descripcion }) => {
+                { cultivos.map((cultivo) => {
+                    const { id, nombre, descripcion } = cultivo;
                     return (
                         <tr key={ id }>
                             <td>{ nombre }</td>
@@ -45,12 +86,15 @@ const Cultivos: FC<Props> = (props) => {
                                 </EliminarCultivo>
                             </td>
                             <td>
-                                <EjecutarComando>
+                                <EjecutarComando actuadores={ actuadores }>
                                     <MdPlayArrow size={ 24 } />
                                 </EjecutarComando>
                             </td>
                             <td>
-                                <ModificarCultivo>
+                                <ModificarCultivo
+                                    cultivo={ cultivo }
+                                    actuadores={ actuadores }
+                                    sensores={ sensores }>
                                     <MdSettings size={ 24 } />
                                 </ModificarCultivo>
                             </td>
@@ -71,10 +115,20 @@ const Cultivos: FC<Props> = (props) => {
     );
 };
 
-interface Cultivo {
+export interface Cultivo {
     id: number;
     nombre: string;
     descripcion?: string;
+}
+
+export interface Actuador {
+    id: number;
+    descripcion?: string;
+    tipo?: 'Humedad' | 'Temperatura' | 'Luz';
+    activo: boolean;
+}
+export interface Sensor extends Actuador {
+    valor?: number;
 }
 
 interface Props {}

@@ -2,30 +2,24 @@ import moment from 'moment';
 import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
 import {
     Button,
-    Card,
     Col,
-    Form,
+    Container,
     FormControlProps,
-    InputGroup,
     Modal,
+    Row,
+    Table,
 } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { MdAdd, MdCreate } from 'react-icons/md';
 import { PacmanLoader } from 'react-spinners';
+import ConfiguracionVariable from './ConfiguracionVariable';
+import { Actuador, Cultivo, Sensor } from './Cultivos';
 
 class ModificarCultivo extends Component<Props> {
-    opciones = ['Prender', 'Apagar'];
-    actuadores = ['Actuador 5', 'Actuador 12', 'Actuador 7'];
-
     state = {
         abierto: false,
         listo: false,
         cargando: false,
-        actuador: this.actuadores[0],
-        opcion: this.opciones[0],
-        desde: moment().format('hh:ss'),
-        hasta: moment()
-            .add(1, 'hour')
-            .format('hh:ss'),
     };
 
     abrir: MouseEventHandler = () => {
@@ -53,7 +47,12 @@ class ModificarCultivo extends Component<Props> {
     };
 
     render(): ReactNode {
-        const { children } = this.props;
+        const {
+            children,
+            cultivo: { nombre },
+            actuadores,
+            sensores,
+        } = this.props;
         return (
             <Fragment>
                 <Button variant="outline-dark" onClick={ this.abrir }>
@@ -62,150 +61,121 @@ class ModificarCultivo extends Component<Props> {
                 <Modal show={ this.state.abierto } onHide={ this.cerrar } centered size="xl">
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            Configuración de
+                            Configuración de '{ nombre }'
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Card border="primary" style={ { width: '24rem', margin: '1rem' } }>
-                            <Card.Header as="h5">Humedad</Card.Header>
-                            <Card.Body>
-                                <Form.Row>
-                                    <Form.Group as={ Col } controlId="minimo">
-                                        <Form.Label>Mínimo</Form.Label>
-                                        <InputGroup>
-                                            <Form.Control
-                                                type="number"
-                                                value={ this.state.desde }
-                                                onChange={ this.handleChange }
-                                            />
-                                            <InputGroup.Append>
-                                                <InputGroup.Text>%</InputGroup.Text>
-                                            </InputGroup.Append>
-                                        </InputGroup>
-                                    </Form.Group>
-                                    <Form.Group as={ Col } controlId="maximo">
-                                        <Form.Label>Máximo</Form.Label>
-                                        <InputGroup>
-                                            <Form.Control
-                                                type="number"
-                                                value={ this.state.desde }
-                                                onChange={ this.handleChange }
-                                            />
-                                            <InputGroup.Append>
-                                                <InputGroup.Text>%</InputGroup.Text>
-                                            </InputGroup.Append>
-                                        </InputGroup>
-                                    </Form.Group>
-                                    <Form.Group as={ Col } controlId="umbral">
-                                        <Form.Label>Umbral</Form.Label>
-                                        <InputGroup>
-                                            <Form.Control
-                                                type="number"
-                                                value={ this.state.desde }
-                                                onChange={ this.handleChange }
-                                            />
-                                            <InputGroup.Append>
-                                                <InputGroup.Text>%</InputGroup.Text>
-                                            </InputGroup.Append>
-                                        </InputGroup>
-                                    </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Group as={ Col } controlId="sensor">
-                                        <Form.Label>Sensor</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            value={ this.state.actuador }
-                                            onChange={ this.handleChange }>
-                                            { this.actuadores.map((actuador) => (
-                                                <option key={ actuador }>{ actuador }</option>
-                                            )) }
-                                        </Form.Control>
-                                    </Form.Group>
-                                    <Form.Group as={ Col } controlId="actuador">
-                                        <Form.Label>Actuador</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            value={ this.state.actuador }
-                                            onChange={ this.handleChange }>
-                                            { this.actuadores.map((actuador) => (
-                                                <option key={ actuador }>{ actuador }</option>
-                                            )) }
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Form.Row>
-                            </Card.Body>
-                        </Card>
-                        <Card border="danger" style={ { width: '24rem', margin: '1rem' } }>
-                            <Card.Header as="h5">Temperatura</Card.Header>
-                            <Card.Body>
-                                <Form.Row>
-                                    <Form.Group as={ Col } controlId="minimo">
-                                        <Form.Label>Mínimo</Form.Label>
-                                        <InputGroup>
-                                            <Form.Control
-                                                type="number"
-                                                value={ this.state.desde }
-                                                onChange={ this.handleChange }
-                                            />
-                                            <InputGroup.Append>
-                                                <InputGroup.Text>°C</InputGroup.Text>
-                                            </InputGroup.Append>
-                                        </InputGroup>
-                                    </Form.Group>
-                                    <Form.Group as={ Col } controlId="maximo">
-                                        <Form.Label>Máximo</Form.Label>
-                                        <InputGroup>
-                                            <Form.Control
-                                                type="number"
-                                                value={ this.state.desde }
-                                                onChange={ this.handleChange }
-                                            />
-                                            <InputGroup.Append>
-                                                <InputGroup.Text>°C</InputGroup.Text>
-                                            </InputGroup.Append>
-                                        </InputGroup>
-                                    </Form.Group>
-                                    <Form.Group as={ Col } controlId="umbral">
-                                        <Form.Label>Umbral</Form.Label>
-                                        <InputGroup>
-                                            <Form.Control
-                                                type="number"
-                                                value={ this.state.desde }
-                                                onChange={ this.handleChange }
-                                            />
-                                            <InputGroup.Append>
-                                                <InputGroup.Text>°C</InputGroup.Text>
-                                            </InputGroup.Append>
-                                        </InputGroup>
-                                    </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Group as={ Col } controlId="sensor">
-                                        <Form.Label>Sensor</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            value={ this.state.actuador }
-                                            onChange={ this.handleChange }>
-                                            { this.actuadores.map((actuador) => (
-                                                <option key={ actuador }>{ actuador }</option>
-                                            )) }
-                                        </Form.Control>
-                                    </Form.Group>
-                                    <Form.Group as={ Col } controlId="actuador">
-                                        <Form.Label>Actuador</Form.Label>
-                                        <Form.Control
-                                            as="select"
-                                            value={ this.state.actuador }
-                                            onChange={ this.handleChange }>
-                                            { this.actuadores.map((actuador) => (
-                                                <option key={ actuador }>{ actuador }</option>
-                                            )) }
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Form.Row>
-                            </Card.Body>
-                        </Card>
+                        <Container style={ { padding: 0 } }>
+                            <Row>
+                                <Col style={ { flexGrow: 0, paddingLeft: '10px' } }>
+                                    <ConfiguracionVariable
+                                        nombre="Humedad"
+                                        unidad="%"
+                                        actuadores={ actuadores }
+                                        sensores={ sensores }
+                                        border="primary"
+                                    />
+                                    <ConfiguracionVariable
+                                        nombre="Temperatura"
+                                        unidad="°C"
+                                        actuadores={ actuadores }
+                                        sensores={ sensores }
+                                        border="danger"
+                                    />
+                                    <ConfiguracionVariable
+                                        nombre="Luz"
+                                        unidad="hs"
+                                        actuadores={ actuadores }
+                                        sensores={ sensores }
+                                        tiempo
+                                        border="warning"
+                                    />
+                                </Col>
+                                <Col style={ { padding: '5px', paddingRight: '15px' } }>
+                                    <h6>Sensores</h6>
+                                    <Table responsive striped hover size="sm">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Descripción</th>
+                                                <th>Tipo</th>
+                                                <th>Activo</th>
+                                                <th>Valor</th>
+                                                <th />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            { sensores.map(
+                                                ({
+                                                    id,
+                                                    descripcion,
+                                                    tipo,
+                                                    activo,
+                                                    valor,
+                                                }) => (
+                                                    <tr key={ id }>
+                                                        <td>{ id }</td>
+                                                        <td>{ descripcion }</td>
+                                                        <td>{ tipo }</td>
+                                                        <td>{ activo ? 'Si' : 'No' }</td>
+                                                        <td>{ valor }</td>
+                                                        <th>
+                                                            <MdCreate />
+                                                        </th>
+                                                    </tr>
+                                                ),
+                                            ) }
+                                            <tr key="add">
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td>
+                                                    <MdAdd />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                                    <h6>Actuadores</h6>
+                                    <Table responsive striped hover size="sm">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Descripción</th>
+                                                <th>Tipo</th>
+                                                <th>Activo</th>
+                                                <th />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            { actuadores.map(
+                                                ({ id, descripcion, tipo, activo }) => (
+                                                    <tr key={ id }>
+                                                        <td>{ id }</td>
+                                                        <td>{ descripcion }</td>
+                                                        <td>{ tipo }</td>
+                                                        <td>{ activo ? 'Si' : 'No' }</td>
+                                                        <th>
+                                                            <MdCreate />
+                                                        </th>
+                                                    </tr>
+                                                ),
+                                            ) }
+                                            <tr key="add">
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td>
+                                                    <MdAdd />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                                </Col>
+                            </Row>
+                        </Container>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={ this.cerrar }>
@@ -239,6 +209,9 @@ class ModificarCultivo extends Component<Props> {
 
 interface Props {
     children: ReactNode;
+    cultivo: Cultivo;
+    actuadores: Actuador[];
+    sensores: Sensor[];
 }
 
 export default ModificarCultivo;

@@ -3,21 +3,21 @@ import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react'
 import { Button, Col, Form, FormControlProps, InputGroup, Modal } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
+import { Actuador } from './Cultivos';
 
 class EjecutarComando extends Component<Props> {
     opciones = ['Prender', 'Apagar'];
-    actuadores = ['Actuador 5', 'Actuador 12', 'Actuador 7'];
 
     state = {
         abierto: false,
         listo: false,
         cargando: false,
-        actuador: this.actuadores[0],
         opcion: this.opciones[0],
         desde: moment().format('hh:ss'),
         hasta: moment()
             .add(1, 'hour')
             .format('hh:ss'),
+        actuador: undefined,
     };
 
     abrir: MouseEventHandler = () => {
@@ -45,7 +45,7 @@ class EjecutarComando extends Component<Props> {
     };
 
     render(): ReactNode {
-        const { children } = this.props;
+        const { children, actuadores } = this.props;
         return (
             <Fragment>
                 <Button variant="outline-dark" onClick={ this.abrir }>
@@ -77,8 +77,9 @@ class EjecutarComando extends Component<Props> {
                                         as="select"
                                         value={ this.state.actuador }
                                         onChange={ this.handleChange }>
-                                        { this.actuadores.map((actuador) => (
-                                            <option key={ actuador }>{ actuador }</option>
+                                        { actuadores.map(({ id, descripcion }) => (
+                                            <option
+                                                key={ id }>{ `${descripcion} ${id}` }</option>
                                         )) }
                                     </Form.Control>
                                 </Form.Group>
@@ -145,6 +146,7 @@ class EjecutarComando extends Component<Props> {
 
 interface Props {
     children: ReactNode;
+    actuadores: Actuador[];
 }
 
 export default EjecutarComando;

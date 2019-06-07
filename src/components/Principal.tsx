@@ -6,11 +6,9 @@ class Principal extends Component {
     render(): ReactNode {
         return (
             <Jumbotron fluid style={ { minHeight: 'calc(100vh - 56px)', margin: 0 } }>
-                <Container>
-                    <h2>Mis cultivos</h2>
-                    <br />
-                    <Cultivos />
-                </Container>
+                <h2>Mis cultivos</h2>
+                <br />
+                <Cultivos />
             </Jumbotron>
         );
     }

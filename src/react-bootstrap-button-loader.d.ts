@@ -1,1 +1,0 @@
-declare module 'react-bootstrap-button-loader';
