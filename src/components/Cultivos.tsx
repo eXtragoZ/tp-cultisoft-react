@@ -107,7 +107,12 @@ const Cultivos: FC<Props> = (props) => {
                     <td />
                     <td />
                     <td>
-                        <MdAdd size={ 24 } />
+                        <ModificarCultivo
+                            cultivo={ { id: 0, nombre: 'Nuevo Cultivo' } }
+                            actuadores={ actuadores }
+                            sensores={ sensores }>
+                            <MdAdd size={ 24 } />
+                        </ModificarCultivo>
                     </td>
                 </tr>
             </tbody>
@@ -116,8 +121,8 @@ const Cultivos: FC<Props> = (props) => {
 };
 
 export interface Cultivo {
-    id: number;
-    nombre: string;
+    id?: number;
+    nombre?: string;
     descripcion?: string;
 }
 

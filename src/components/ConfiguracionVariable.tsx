@@ -1,12 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import {
-    Card,
-    CardProps,
-    Col,
-    Form,
-    FormControlProps,
-    InputGroup,
-} from 'react-bootstrap';
+import { Card, CardProps, Col, Form, FormControlProps, InputGroup } from 'react-bootstrap';
 import { Actuador, Sensor } from './Cultivos';
 
 class ConfiguracionVariable extends Component<Props, State> {
@@ -87,7 +80,7 @@ class ConfiguracionVariable extends Component<Props, State> {
                                     value={ sensor }
                                     onChange={ this.handleChange }
                                     size="sm">
-                                    { sensores.map(({ id, descripcion }) => (
+                                    { sensores.map(({ id, descripcion = 'ID' }) => (
                                         <option key={ id }>{ `${descripcion} ${id}` }</option>
                                     )) }
                                 </Form.Control>
@@ -100,7 +93,7 @@ class ConfiguracionVariable extends Component<Props, State> {
                                 value={ actuador }
                                 onChange={ this.handleChange }
                                 size="sm">
-                                { actuadores.map(({ id, descripcion }) => (
+                                { actuadores.map(({ id, descripcion = 'ID' }) => (
                                     <option key={ id }>{ `${descripcion} ${id}` }</option>
                                 )) }
                             </Form.Control>

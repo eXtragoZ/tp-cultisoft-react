@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { Container, Jumbotron } from 'react-bootstrap';
+import { Jumbotron } from 'react-bootstrap';
 import Cultivos from './Cultivos';
 
 class Principal extends Component {

@@ -77,7 +77,7 @@ class EjecutarComando extends Component<Props> {
                                         as="select"
                                         value={ this.state.actuador }
                                         onChange={ this.handleChange }>
-                                        { actuadores.map(({ id, descripcion }) => (
+                                        { actuadores.map(({ id, descripcion='ID' }) => (
                                             <option
                                                 key={ id }>{ `${descripcion} ${id}` }</option>
                                         )) }

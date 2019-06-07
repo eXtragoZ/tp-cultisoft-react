@@ -1,17 +1,8 @@
-import moment from 'moment';
 import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
-import {
-    Button,
-    Col,
-    Container,
-    FormControlProps,
-    Modal,
-    Row,
-    Table,
-} from 'react-bootstrap';
+import { Button, Col, Container, FormControlProps, Modal, Row } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import { MdAdd, MdCreate } from 'react-icons/md';
 import { PacmanLoader } from 'react-spinners';
+import ConfiguracionSensoresActuadores from './ConfiguracionSensoresActuadores';
 import ConfiguracionVariable from './ConfiguracionVariable';
 import { Actuador, Cultivo, Sensor } from './Cultivos';
 
@@ -65,9 +56,9 @@ class ModificarCultivo extends Component<Props> {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Container style={ { padding: 0 } }>
+                        <Container>
                             <Row>
-                                <Col style={ { flexGrow: 0, paddingLeft: '10px' } }>
+                                <Col style={ { flexGrow: 0 } }>
                                     <ConfiguracionVariable
                                         nombre="Humedad"
                                         unidad="%"
@@ -91,88 +82,15 @@ class ModificarCultivo extends Component<Props> {
                                         border="warning"
                                     />
                                 </Col>
-                                <Col style={ { padding: '5px', paddingRight: '15px' } }>
-                                    <h6>Sensores</h6>
-                                    <Table responsive striped hover size="sm">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Descripción</th>
-                                                <th>Tipo</th>
-                                                <th>Activo</th>
-                                                <th>Valor</th>
-                                                <th />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            { sensores.map(
-                                                ({
-                                                    id,
-                                                    descripcion,
-                                                    tipo,
-                                                    activo,
-                                                    valor,
-                                                }) => (
-                                                    <tr key={ id }>
-                                                        <td>{ id }</td>
-                                                        <td>{ descripcion }</td>
-                                                        <td>{ tipo }</td>
-                                                        <td>{ activo ? 'Si' : 'No' }</td>
-                                                        <td>{ valor }</td>
-                                                        <th>
-                                                            <MdCreate />
-                                                        </th>
-                                                    </tr>
-                                                ),
-                                            ) }
-                                            <tr key="add">
-                                                <td />
-                                                <td />
-                                                <td />
-                                                <td />
-                                                <td />
-                                                <td>
-                                                    <MdAdd />
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                    <h6>Actuadores</h6>
-                                    <Table responsive striped hover size="sm">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Descripción</th>
-                                                <th>Tipo</th>
-                                                <th>Activo</th>
-                                                <th />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            { actuadores.map(
-                                                ({ id, descripcion, tipo, activo }) => (
-                                                    <tr key={ id }>
-                                                        <td>{ id }</td>
-                                                        <td>{ descripcion }</td>
-                                                        <td>{ tipo }</td>
-                                                        <td>{ activo ? 'Si' : 'No' }</td>
-                                                        <th>
-                                                            <MdCreate />
-                                                        </th>
-                                                    </tr>
-                                                ),
-                                            ) }
-                                            <tr key="add">
-                                                <td />
-                                                <td />
-                                                <td />
-                                                <td />
-                                                <td>
-                                                    <MdAdd />
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
+                                <Col>
+                                    <ConfiguracionSensoresActuadores
+                                        nombre="Sensores"
+                                        sensores={ sensores }
+                                    />
+                                    <ConfiguracionSensoresActuadores
+                                        nombre="Actuadores"
+                                        actuadores={ actuadores }
+                                    />
                                 </Col>
                             </Row>
                         </Container>
@@ -189,7 +107,7 @@ class ModificarCultivo extends Component<Props> {
                                     css={ 'margin: 2px 40px 12px 0px;' }
                                 />
                             ) : (
-                                'Enviar'
+                                'Guardar'
                             ) }
                         </Button>
                     </Modal.Footer>
@@ -200,7 +118,7 @@ class ModificarCultivo extends Component<Props> {
                     title="Listo!"
                     onConfirm={ this.terminar }
                     show={ this.state.listo }>
-                    Tu comando fue enviado!
+                    Tus cambios fueron guardados!
                 </SweetAlert>
             </Fragment>
         );
