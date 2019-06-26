@@ -1,141 +1,142 @@
-import React, { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import { Table } from 'react-bootstrap';
-import { MdAdd, MdDeleteForever, MdPlayArrow, MdSettings } from 'react-icons/md';
-import EjecutarComando from './EjecutarComando';
-import EliminarCultivo from './EliminarCultivo';
+import { MdAdd } from 'react-icons/md';
+import CultivoRow from './CultivoRow';
 import ModificarCultivo from './ModificarCultivo';
 
-const Cultivos: FC<Props> = (props) => {
-    const cultivos: Cultivo[] = [
-        {
-            id: 5,
-            nombre: 'La granjita',
-        },
-        {
-            id: 7,
-            nombre: 'Prueba 2',
-            descripcion: 'babblablalbbalablablbalablbalablbalbal',
-        },
-        {
-            id: 12,
-            nombre: 'Mi potus',
-        },
-    ];
-
-    const actuadores: Actuador[] = [
+const Cultivos: FC<Props> = () => {
+    const actua: Actuador[] = [
         {
             id: 3,
             descripcion: 'Manguera',
             tipo: 'Humedad',
-            activo: true,
+            estado: 'Encendido',
+            eliminado: false,
         },
         {
             id: 53,
             descripcion: 'Luz UV',
             tipo: 'Luz',
-            activo: true,
+            estado: 'Encendido',
+            eliminado: false,
         },
         {
             id: 23,
             descripcion: 'Luz Blanca',
             tipo: 'Luz',
-            activo: false,
+            estado: 'Apagado',
+            eliminado: false,
         },
     ];
 
-    const sensores: Sensor[] = [
+    const sens: Sensor[] = [
         {
             id: 12,
             tipo: 'Humedad',
-            activo: true,
+            estado: 'Encendido',
             valor: 33,
+            eliminado: false,
         },
         {
             id: 48,
             descripcion: 'Estufa',
             tipo: 'Temperatura',
-            activo: true,
+            estado: 'Encendido',
             valor: 22,
+            eliminado: false,
         },
         {
             id: 5,
-            activo: false,
+            estado: 'Apagado',
+            eliminado: false,
         },
     ];
+
+    const cultivos: Cultivo[] = [
+        {
+            id: 5,
+            nombre: 'La granjita',
+            actuadores: actua,
+            sensores: sens,
+        },
+        {
+            id: 7,
+            nombre: 'Prueba 2',
+            descripcion: 'babblablalbbalablablbalablbalablbalbal',
+            actuadores: actua,
+        },
+        {
+            id: 12,
+            nombre: 'Mi potus',
+            sensores: sens,
+        },
+    ];
+
     return (
-        <Table responsive striped hover>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Eliminar</th>
-                    <th>Ejecutar</th>
-                    <th>Configuración</th>
-                </tr>
-            </thead>
-            <tbody>
-                { cultivos.map((cultivo) => {
-                    const { id, nombre, descripcion } = cultivo;
-                    return (
-                        <tr key={ id }>
-                            <td>{ nombre }</td>
-                            <td>{ descripcion }</td>
-                            <td>
-                                <EliminarCultivo>
-                                    <MdDeleteForever size={ 24 } />
-                                </EliminarCultivo>
-                            </td>
-                            <td>
-                                <EjecutarComando actuadores={ actuadores }>
-                                    <MdPlayArrow size={ 24 } />
-                                </EjecutarComando>
-                            </td>
-                            <td>
-                                <ModificarCultivo
-                                    cultivo={ cultivo }
-                                    actuadores={ actuadores }
-                                    sensores={ sensores }>
-                                    <MdSettings size={ 24 } />
-                                </ModificarCultivo>
-                            </td>
-                        </tr>
-                    );
-                }) }
-                <tr key="add">
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td>
-                        <ModificarCultivo
-                            cultivo={ { id: 0, nombre: 'Nuevo Cultivo' } }
-                            actuadores={ actuadores }
-                            sensores={ sensores }>
-                            <MdAdd size={ 24 } />
-                        </ModificarCultivo>
-                    </td>
-                </tr>
-            </tbody>
-        </Table>
+        <Fragment>
+            <h2>Mis cultivos</h2>
+            <br />
+            <Table responsive striped hover>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Eliminar</th>
+                        <th>Ejecutar</th>
+                        <th>Configuración</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    { cultivos.map((cultivo) => (
+                        <CultivoRow key={ cultivo.id } cultivo={ cultivo } />
+                    )) }
+                    <tr key="add">
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td>
+                            <ModificarCultivo cultivo={ { nombre: 'Nuevo Cultivo' } }>
+                                <MdAdd size={ 24 } />
+                            </ModificarCultivo>
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
+        </Fragment>
     );
 };
+
+interface Props {
+    cultivos: Cultivo[];
+}
 
 export interface Cultivo {
     id?: number;
     nombre?: string;
     descripcion?: string;
+    actuadores?: Actuador[];
+    sensores?: Sensor[];
 }
 
 export interface Actuador {
-    id: number;
+    id?: number;
     descripcion?: string;
     tipo?: 'Humedad' | 'Temperatura' | 'Luz';
-    activo: boolean;
+    estado?: 'Encendido' | 'Apagado';
+    activarDesde?: string;
+    activarHasta?: string;
+    eliminado: boolean;
 }
-export interface Sensor extends Actuador {
+export interface Sensor {
+    id?: number;
+    descripcion?: string;
+    tipo?: 'Humedad' | 'Temperatura' | 'Luz';
+    estado?: 'Encendido' | 'Apagado';
     valor?: number;
+    valorMinimo?: number;
+    valorMaximo?: number;
+    eliminado: boolean;
 }
-
-interface Props {}
 
 export default Cultivos;

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
-import { Button, Col, Form, FormControlProps, InputGroup, Modal } from 'react-bootstrap';
+import { Button, Col, Form, FormControlProps, Modal } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
 import { Actuador } from './Cultivos';
@@ -45,10 +45,13 @@ class EjecutarComando extends Component<Props> {
     };
 
     render(): ReactNode {
-        const { children, actuadores } = this.props;
+        const { children, actuadores = [] } = this.props;
         return (
             <Fragment>
-                <Button variant="outline-dark" onClick={ this.abrir }>
+                <Button
+                    variant="outline-dark"
+                    onClick={ this.abrir }
+                    disabled={ !actuadores.length }>
                     { children }
                 </Button>
                 <Modal show={ this.state.abierto } onHide={ this.cerrar } centered>
@@ -77,39 +80,11 @@ class EjecutarComando extends Component<Props> {
                                         as="select"
                                         value={ this.state.actuador }
                                         onChange={ this.handleChange }>
-                                        { actuadores.map(({ id, descripcion='ID' }) => (
+                                        { actuadores.map(({ id, descripcion = 'ID' }) => (
                                             <option
                                                 key={ id }>{ `${descripcion} ${id}` }</option>
                                         )) }
                                     </Form.Control>
-                                </Form.Group>
-                            </Form.Row>
-                            <Form.Row>
-                                <Form.Group as={ Col } controlId="desde">
-                                    <Form.Label>Desde</Form.Label>
-                                    <InputGroup>
-                                        <Form.Control
-                                            type="time"
-                                            value={ this.state.desde }
-                                            onChange={ this.handleChange }
-                                        />
-                                        <InputGroup.Append>
-                                            <InputGroup.Text id="hs">hs</InputGroup.Text>
-                                        </InputGroup.Append>
-                                    </InputGroup>
-                                </Form.Group>
-                                <Form.Group as={ Col } controlId="hasta">
-                                    <Form.Label>Hasta</Form.Label>
-                                    <InputGroup>
-                                        <Form.Control
-                                            type="time"
-                                            value={ this.state.hasta }
-                                            onChange={ this.handleChange }
-                                        />
-                                        <InputGroup.Append>
-                                            <InputGroup.Text id="hs">hs</InputGroup.Text>
-                                        </InputGroup.Append>
-                                    </InputGroup>
                                 </Form.Group>
                             </Form.Row>
                         </Form>
@@ -146,7 +121,7 @@ class EjecutarComando extends Component<Props> {
 
 interface Props {
     children: ReactNode;
-    actuadores: Actuador[];
+    actuadores?: Actuador[];
 }
 
 export default EjecutarComando;
