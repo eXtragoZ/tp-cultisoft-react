@@ -5,7 +5,6 @@ import ConfiguracionSensor from './ConfiguracionSensor';
 import { Sensor } from './Cultivos';
 
 class ConfiguracionSensores extends Component<Props, State> {
-    unidades = { Humedad: '%', Temperatura: '°C', Luz: 'hs' };
     constructor(props: Props) {
         super(props);
 
@@ -52,7 +51,7 @@ class ConfiguracionSensores extends Component<Props, State> {
                     <Table responsive striped size="sm">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Codigo</th>
                                 <th>Descripción</th>
                                 <th>Tipo</th>
                                 <th>Estado</th>

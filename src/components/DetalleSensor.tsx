@@ -1,5 +1,7 @@
+import moment from 'moment';
 import React, { Component, ReactNode } from 'react';
 import { Card, CardProps, Table } from 'react-bootstrap';
+import { FaAngleDoubleDown, FaAngleDoubleUp } from 'react-icons/fa';
 import { MdReportProblem } from 'react-icons/md';
 import { Sensor } from './Cultivos';
 import IndicadorEstado from './IndicadorEstado';
@@ -8,7 +10,15 @@ class DetalleSensor extends Component<Props> {
     unidades = { Humedad: '%', Temperatura: '°C', Luz: 'lx' };
     render(): ReactNode {
         const {
-            sensor: { id, descripcion, tipo, estado, valor, valorMinimo, valorMaximo },
+            sensor: {
+                id,
+                descripcion,
+                tipo,
+                estado,
+                valorMinimo,
+                valorMaximo,
+                estados = [],
+            },
         } = this.props;
 
         return (
@@ -21,7 +31,7 @@ class DetalleSensor extends Component<Props> {
                     <Table responsive size="sm">
                         <tbody>
                             <tr>
-                                <td style={ style.Td }>ID</td>
+                                <td style={ style.Td }>Codigo</td>
                                 <td>{ id }</td>
                             </tr>
                             <tr>
@@ -32,29 +42,53 @@ class DetalleSensor extends Component<Props> {
                                 <td style={ style.Td }>Tipo</td>
                                 <td>{ tipo || '-' }</td>
                             </tr>
-                            <tr>
-                                <td style={ style.Td }>Estado</td>
-                                <td>
-                                    <IndicadorEstado estado={ estado } />
-                                </td>
-                            </tr>
+                            { estado && (
+                                <tr>
+                                    <td style={ style.Td }>Estado</td>
+                                    <td>
+                                        <IndicadorEstado estado={ estado } />
+                                    </td>
+                                </tr>
+                            ) }
                             <tr>
                                 <td style={ style.Subtitulo } colSpan={ 2 }>
                                     Valores censados
                                 </td>
                             </tr>
-                            <tr>
-                                <td style={ style.Td }>18/06/2019 23:30</td>
-                                <td>
-                                    { valor } { tipo ? this.unidades[tipo] : '' }{ ' ' }
-                                    { valorMinimo && valor && valorMinimo >= valor && (
-                                        <MdReportProblem />
-                                    ) }
-                                    { valorMaximo && valor && valorMaximo <= valor && (
-                                        <MdReportProblem />
-                                    ) }
-                                </td>
-                            </tr>
+                            { estados.slice(0, 5).map(({ fechaHora, valor }) => (
+                                <tr key={ fechaHora }>
+                                    <td style={ style.Td }>
+                                        { moment(fechaHora).format('DD/MM/YYYY hh:ss') }
+                                    </td>
+                                    <td>
+                                        { valor } { tipo ? this.unidades[tipo] : '' }{ ' ' }
+                                        { valorMinimo &&
+                                            valor &&
+                                            valorMinimo >= valor && [
+                                                <MdReportProblem
+                                                    key="atencion"
+                                                    style={ { color: 'red' } }
+                                                />,
+                                                <FaAngleDoubleDown
+                                                    key="valorBajo"
+                                                    style={ { color: 'red' } }
+                                                />,
+                                            ] }
+                                        { valorMaximo &&
+                                            valor &&
+                                            valorMaximo <= valor && [
+                                                <MdReportProblem
+                                                    key="atencion"
+                                                    style={ { color: 'red' } }
+                                                />,
+                                                <FaAngleDoubleUp
+                                                    key="valorAlto"
+                                                    style={ { color: 'red' } }
+                                                />,
+                                            ] }
+                                    </td>
+                                </tr>
+                            )) }
                         </tbody>
                     </Table>
                 </Card.Body>

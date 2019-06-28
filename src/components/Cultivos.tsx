@@ -1,114 +1,94 @@
-import React, { FC, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Table } from 'react-bootstrap';
 import { MdAdd } from 'react-icons/md';
+import cultiFetch from '../CultiAPI';
 import CultivoRow from './CultivoRow';
 import ModificarCultivo from './ModificarCultivo';
+import { Usuario } from './Principal';
 
-const Cultivos: FC<Props> = () => {
-    const actua: Actuador[] = [
-        {
-            id: 3,
-            descripcion: 'Manguera',
-            tipo: 'Humedad',
-            estado: 'Encendido',
-            eliminado: false,
-        },
-        {
-            id: 53,
-            descripcion: 'Luz UV',
-            tipo: 'Luz',
-            estado: 'Encendido',
-            eliminado: false,
-        },
-        {
-            id: 23,
-            descripcion: 'Luz Blanca',
-            tipo: 'Luz',
-            estado: 'Apagado',
-            eliminado: false,
-        },
-    ];
+class Cultivos extends Component<Props> {
+    state: { cultivos: Cultivo[]; cargando: boolean; error?: string } = {
+        cultivos: [],
+        cargando: false,
+    };
 
-    const sens: Sensor[] = [
-        {
-            id: 12,
-            tipo: 'Humedad',
-            estado: 'Encendido',
-            valor: 33,
-            eliminado: false,
-        },
-        {
-            id: 48,
-            descripcion: 'Estufa',
-            tipo: 'Temperatura',
-            estado: 'Encendido',
-            valor: 22,
-            eliminado: false,
-        },
-        {
-            id: 5,
-            estado: 'Apagado',
-            eliminado: false,
-        },
-    ];
+    componentDidMount = () => {
+        this.obtenerCultivos();
+    };
 
-    const cultivos: Cultivo[] = [
-        {
-            id: 5,
-            nombre: 'La granjita',
-            actuadores: actua,
-            sensores: sens,
-        },
-        {
-            id: 7,
-            nombre: 'Prueba 2',
-            descripcion: 'babblablalbbalablablbalablbalablbalbal',
-            actuadores: actua,
-        },
-        {
-            id: 12,
-            nombre: 'Mi potus',
-            sensores: sens,
-        },
-    ];
+    obtenerCultivos = async () => {
+        const { usuario } = this.props;
+        this.setState({ cargando: true });
+        try {
+            const json = await cultiFetch('cultivo/getCultivos/', usuario.id);
+            this.setState({ cultivos: json.cultivos });
+        } catch (error) {
+            if (error.message === 'Failed to fetch') {
+                this.setState({ error: 'Error de conexión' });
+            } else {
+                this.setState({ error: error.message || 'Error de conexión' });
+            }
+        }
+        this.setState({ cargando: false });
+    };
 
-    return (
-        <Fragment>
-            <h2>Mis cultivos</h2>
-            <br />
-            <Table responsive striped hover>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Eliminar</th>
-                        <th>Ejecutar</th>
-                        <th>Configuración</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { cultivos.map((cultivo) => (
-                        <CultivoRow key={ cultivo.id } cultivo={ cultivo } />
-                    )) }
-                    <tr key="add">
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td>
-                            <ModificarCultivo cultivo={ { nombre: 'Nuevo Cultivo' } }>
-                                <MdAdd size={ 24 } />
-                            </ModificarCultivo>
-                        </td>
-                    </tr>
-                </tbody>
-            </Table>
-        </Fragment>
-    );
-};
+    render() {
+        const { usuario } = this.props;
+        const { cultivos, cargando, error } = this.state;
+        return (
+            <Fragment>
+                <h2>Mis cultivos</h2>
+                <br />
+                { cargando || error ? (
+                    cargando ? (
+                        <div style={ { color: 'yellow' } }>Cargando...</div>
+                    ) : (
+                        <div style={ { color: 'red' } }>Error al cargar los cultivos</div>
+                    )
+                ) : (
+                    <Table responsive striped hover>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Eliminar</th>
+                                <th>Ejecutar</th>
+                                <th>Configuración</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { cultivos.map((cultivo) => (
+                                <CultivoRow
+                                    key={ cultivo.id }
+                                    cultivo={ cultivo }
+                                    usuario={ usuario }
+                                    actualizarCultivos={ this.obtenerCultivos }
+                                />
+                            )) }
+                            <tr key="add">
+                                <td />
+                                <td />
+                                <td />
+                                <td />
+                                <td>
+                                    <ModificarCultivo
+                                        cultivo={ (() => ({ nombre: 'Nuevo Cultivo' }))() }
+                                        usuario={ usuario }
+                                        actualizarCultivos={ this.obtenerCultivos }>
+                                        <MdAdd size={ 24 } />
+                                    </ModificarCultivo>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                ) }
+            </Fragment>
+        );
+    }
+}
 
 interface Props {
-    cultivos: Cultivo[];
+    usuario: Usuario;
 }
 
 export interface Cultivo {
@@ -127,6 +107,7 @@ export interface Actuador {
     activarDesde?: string;
     activarHasta?: string;
     eliminado: boolean;
+    comandos?: any[];
 }
 export interface Sensor {
     id?: number;
@@ -137,6 +118,7 @@ export interface Sensor {
     valorMinimo?: number;
     valorMaximo?: number;
     eliminado: boolean;
+    estados?: any[];
 }
 
 export default Cultivos;

@@ -1,10 +1,10 @@
 import moment from 'moment';
 import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
-import { Button, Col, Form, FormControlProps, Modal } from 'react-bootstrap';
+import { Button, Col, Form, FormControlProps, InputGroup, Modal } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
+import cultiFetch from '../CultiAPI';
 import { Actuador } from './Cultivos';
-
 class EjecutarComando extends Component<Props> {
     opciones = ['Prender', 'Apagar'];
 
@@ -13,11 +13,11 @@ class EjecutarComando extends Component<Props> {
         listo: false,
         cargando: false,
         opcion: this.opciones[0],
+        actuador: undefined,
         desde: moment().format('hh:ss'),
         hasta: moment()
             .add(1, 'hour')
             .format('hh:ss'),
-        actuador: undefined,
     };
 
     abrir: MouseEventHandler = () => {
@@ -32,10 +32,41 @@ class EjecutarComando extends Component<Props> {
         this.setState({ listo: false });
     };
 
+    enviarDeshabilitado = () => {
+        const { desde, hasta, cargando } = this.state;
+        return cargando || desde === '' || hasta === '';
+    };
+
     enviar = async () => {
+        const { actuadores = [] } = this.props;
+        const { actuador, opcion, desde, hasta } = this.state;
+        const acuadorEntidad = actuadores.find(
+            ({ id, descripcion = 'ID' }) => `${descripcion} ${id}` === actuador,
+        );
+        const desdeMoment = moment(desde, 'hh:ss');
+        const hastaMoment = moment(hasta, 'hh:ss');
+        const dayAfter = desdeMoment.isAfter(hastaMoment);
+
         this.setState({ cargando: true });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        this.setState({ abierto: false, listo: true, cargando: false });
+        try {
+            // const json =
+            await cultiFetch('comando/enviarComando/', {
+                actuador: acuadorEntidad,
+                tipo: opcion,
+                desde: desdeMoment.format('YYYY-MM-DDThh:ssZ'),
+                hasta: (dayAfter ? hastaMoment.add(1, 'day') : hastaMoment).format(
+                    'YYYY-MM-DDThh:ssZ',
+                ),
+            });
+            this.setState({ abierto: false, listo: true });
+        } catch (error) {
+            if (error.message === 'Failed to fetch') {
+                this.setState({ error: 'Error de conexión' });
+            } else {
+                this.setState({ error: error.message || 'Error de conexión' });
+            }
+        }
+        this.setState({ cargando: false });
     };
 
     handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
@@ -63,7 +94,7 @@ class EjecutarComando extends Component<Props> {
                     <Modal.Body>
                         <Form onSubmit={ this.enviar }>
                             <Form.Row>
-                                <Form.Group as={ Col } controlId="accion">
+                                <Form.Group as={ Col } controlId="opcion">
                                     <Form.Label>Acción</Form.Label>
                                     <Form.Control
                                         as="select"
@@ -80,11 +111,39 @@ class EjecutarComando extends Component<Props> {
                                         as="select"
                                         value={ this.state.actuador }
                                         onChange={ this.handleChange }>
-                                        { actuadores.map(({ id, descripcion = 'ID' }) => (
+                                        { actuadores.map(({ id, descripcion = 'Actuador' }) => (
                                             <option
-                                                key={ id }>{ `${descripcion} ${id}` }</option>
+                                                key={ id }>{ `${descripcion} - Codigo: ${id}` }</option>
                                         )) }
                                     </Form.Control>
+                                </Form.Group>
+                            </Form.Row>
+                            <Form.Row>
+                                <Form.Group as={ Col } controlId="desde">
+                                    <Form.Label>Desde</Form.Label>
+                                    <InputGroup>
+                                        <Form.Control
+                                            type="time"
+                                            value={ this.state.desde }
+                                            onChange={ this.handleChange }
+                                        />
+                                        <InputGroup.Append>
+                                            <InputGroup.Text id="hs">hs</InputGroup.Text>
+                                        </InputGroup.Append>
+                                    </InputGroup>
+                                </Form.Group>
+                                <Form.Group as={ Col } controlId="hasta">
+                                    <Form.Label>Hasta</Form.Label>
+                                    <InputGroup>
+                                        <Form.Control
+                                            type="time"
+                                            value={ this.state.hasta }
+                                            onChange={ this.handleChange }
+                                        />
+                                        <InputGroup.Append>
+                                            <InputGroup.Text id="hs">hs</InputGroup.Text>
+                                        </InputGroup.Append>
+                                    </InputGroup>
                                 </Form.Group>
                             </Form.Row>
                         </Form>
@@ -93,7 +152,9 @@ class EjecutarComando extends Component<Props> {
                         <Button variant="secondary" onClick={ this.cerrar }>
                             Cerrar
                         </Button>
-                        <Button onClick={ this.enviar } disabled={ this.state.cargando }>
+                        <Button
+                            onClick={ this.enviar }
+                            disabled={ this.enviarDeshabilitado() }>
                             { this.state.cargando ? (
                                 <PacmanLoader
                                     size={ 10 }

@@ -1,6 +1,7 @@
 import React, { Component, ReactNode } from 'react';
 import { Button, Col, Form, FormControlProps, Modal } from 'react-bootstrap';
 import { PacmanLoader } from 'react-spinners';
+import cultiFetch from '../CultiAPI';
 import { Usuario } from './Principal';
 
 class Login extends Component<Props> {
@@ -17,35 +18,21 @@ class Login extends Component<Props> {
         const { usuario, password } = this.state;
         this.setState({ cargando: true, error: undefined });
         try {
-            const response = await fetch('http://192.168.0.100:8080/usuario/login/  ', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ usuario, password }),
-            });
-            if (!response.ok) {
-                throw Error(response.statusText);
-            }
-            const json = await response.json();
-            if (json.mensaje !== 'Logueado') {
-                if (json.mensaje === 'Incorrecto') {
-                    this.setState({ loginDeshabilitado: true });
-                    throw Error('Usuario y Contraseña incorrecto.');
-                }
-                this.setState({ loginDeshabilitado: true });
-                throw Error(response.statusText);
-            }
-            // this.setState({ data: json, cargando: false });
+            const json = await cultiFetch('usuario/login/', { usuario, password });
             onLogin(json.usuario as Usuario);
         } catch (error) {
-            console.log(error);
-            this.setState({
-                error: error.message || 'Error de conexión',
-                cargando: false,
-            });
+            if (error.message === 'Incorrecto') {
+                this.setState({
+                    error: 'Usuario y Contraseña incorrecto',
+                    loginDeshabilitado: true,
+                });
+            } else if (error.message === 'Failed to fetch') {
+                this.setState({ error: 'Error de conexión' });
+            } else {
+                this.setState({ error: error.message || 'Error de conexión' });
+            }
         }
+        this.setState({ cargando: false });
     };
 
     handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (

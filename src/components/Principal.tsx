@@ -16,7 +16,7 @@ class Principal extends Component<{}, State> {
         return (
             <Jumbotron fluid style={ { minHeight: 'calc(100vh - 56px)', margin: 0 } }>
                 { usuario ? (
-                    <Cultivos cultivos={ usuario.cultivos } />
+                    <Cultivos usuario={ usuario } />
                 ) : (
                     <Login onLogin={ this.onLogin } />
                 ) }

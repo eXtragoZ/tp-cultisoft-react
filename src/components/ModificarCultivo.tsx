@@ -9,9 +9,11 @@ import {
 } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
+import cultiFetch from '../CultiAPI';
 import ConfiguracionActuadores from './ConfiguracionActuadores';
 import ConfiguracionSensores from './ConfiguracionSensores';
 import { Actuador, Cultivo, Sensor } from './Cultivos';
+import { Usuario } from './Principal';
 
 class ModificarCultivo extends Component<Props, State> {
     constructor(props: Props) {
@@ -34,25 +36,100 @@ class ModificarCultivo extends Component<Props, State> {
     };
 
     terminar = () => {
-        this.setState({ listo: false });
+        const { actualizarCultivos } = this.props;
+        this.setState({ listo: false }, actualizarCultivos);
     };
 
     enviar = async () => {
+        const {
+            cultivo: { id },
+        } = this.props;
+        if (id != null) {
+            this.modificarCultivo();
+        } else {
+            this.nuevoCultivo();
+        }
+    };
+    modificarCultivo = async () => {
+        const {
+            cultivo: { id },
+        } = this.props;
+        const { nombre, descripcion } = this.state;
+        const sensores = this.sensoresAEnviar();
+        const actuadores = this.actuadoresAEnviar();
         this.setState({ cargando: true });
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
         try {
-            const response = await fetch(
-                'https://api.coinmarketcap.com/v1/ticker/?limit=10',
-            );
-            if (!response.ok) {
-                throw Error(response.statusText);
-            }
-            const json = await response.json();
+            // const json =
+            await cultiFetch('cultivo/modificarCultivo/', {
+                id,
+                nombre,
+                descripcion,
+                sensores,
+                actuadores,
+            });
             this.setState({ abierto: false, listo: true, cargando: false });
         } catch (error) {
-            this.setState({ error: error.message, cargando: false });
+            if (error.message === 'Failed to fetch') {
+                this.setState({ error: 'Error de conexión' });
+            } else {
+                this.setState({ error: error.message || 'Error de conexión' });
+            }
         }
+        this.setState({ cargando: false });
+    };
+
+    nuevoCultivo = async () => {
+        const { usuario, actualizarCultivos } = this.props;
+        const { nombre, descripcion } = this.state;
+        const sensores = this.sensoresAEnviar();
+        const actuadores = this.actuadoresAEnviar();
+        this.setState({ cargando: true });
+
+        try {
+            // const json =
+            await cultiFetch('cultivo/insertCultivo/', {
+                id_usuario: usuario.id,
+                nombre,
+                descripcion,
+                sensores,
+                actuadores,
+            });
+            this.setState(
+                { abierto: false, listo: true, cargando: false },
+                actualizarCultivos,
+            );
+        } catch (error) {
+            if (error.message === 'Failed to fetch') {
+                this.setState({ error: 'Error de conexión' });
+            } else {
+                this.setState({ error: error.message || 'Error de conexión' });
+            }
+        }
+        this.setState({ cargando: false });
+    };
+
+    sensoresAEnviar = () => {
+        const { sensores = [] } = this.state;
+        const sensoresAgregados = sensores.filter(
+            (sensor) => !sensor.id && !sensor.eliminado,
+        );
+        const sensoresModificados = sensores.filter(
+            (sensor) => sensor.id && this.esModificado(sensor, this.sensorPorId(sensor.id)),
+        );
+        return [...sensoresAgregados, ...sensoresModificados];
+    };
+
+    actuadoresAEnviar = () => {
+        const { actuadores = [] } = this.state;
+        const actuadoresAgregados = actuadores.filter(
+            (actuador) => !actuador.id && !actuador.eliminado,
+        );
+        const actuadoresModificados = actuadores.filter(
+            (actuador) =>
+                actuador.id &&
+                this.esModificado(actuador, this.actuadorPorId(actuador.id)),
+        );
+        return [...actuadoresAgregados, ...actuadoresModificados];
     };
 
     guardarDeshabilitado() {
@@ -220,6 +297,8 @@ class ModificarCultivo extends Component<Props, State> {
 interface Props {
     children: ReactNode;
     cultivo: Cultivo;
+    usuario: Usuario;
+    actualizarCultivos: () => void;
 }
 
 interface State {

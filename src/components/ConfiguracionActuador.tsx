@@ -11,7 +11,7 @@ class ConfiguracionActuador extends Component<Props, State> {
 
         this.state = {
             actuador: props.actuador,
-            edicion: false,
+            edicion: !props.actuador.id,
         };
     }
 
@@ -98,43 +98,45 @@ class ConfiguracionActuador extends Component<Props, State> {
                         tipo
                     ) }
                 </td>
-                <td>
-                    <IndicadorEstado estado={ estado } />
-                </td>
-                <td>
-                    { edicion ? (
-                        <InputGroup size="sm">
-                            <FormControl
-                                type="time"
-                                value={ activarDesde }
-                                id="activarDesde"
-                                onChange={ this.handleChange }
-                            />
-                            <InputGroup.Append>
-                                <InputGroup.Text>hs</InputGroup.Text>
-                            </InputGroup.Append>
-                        </InputGroup>
-                    ) : (
-                        activarDesde + ' hs'
-                    ) }
-                </td>
-                <td>
-                    { edicion ? (
-                        <InputGroup size="sm">
-                            <FormControl
-                                type="time"
-                                value={ activarHasta }
-                                id="activarHasta"
-                                onChange={ this.handleChange }
-                            />
-                            <InputGroup.Append>
-                                <InputGroup.Text>hs</InputGroup.Text>
-                            </InputGroup.Append>
-                        </InputGroup>
-                    ) : (
-                        activarHasta + ' hs'
-                    ) }
-                </td>
+                <td>{ estado ? <IndicadorEstado estado={ estado } /> : ' - ' }</td>
+                { false && (
+                    <td>
+                        { edicion ? (
+                            <InputGroup size="sm">
+                                <FormControl
+                                    type="time"
+                                    value={ activarDesde }
+                                    id="activarDesde"
+                                    onChange={ this.handleChange }
+                                />
+                                <InputGroup.Append>
+                                    <InputGroup.Text>hs</InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        ) : (
+                            activarDesde + ' hs'
+                        ) }
+                    </td>
+                ) }
+                { false && (
+                    <td>
+                        { edicion ? (
+                            <InputGroup size="sm">
+                                <FormControl
+                                    type="time"
+                                    value={ activarHasta }
+                                    id="activarHasta"
+                                    onChange={ this.handleChange }
+                                />
+                                <InputGroup.Append>
+                                    <InputGroup.Text>hs</InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        ) : (
+                            activarHasta && activarHasta + ' hs'
+                        ) }
+                    </td>
+                ) }
                 <th>
                     <Button
                         variant="outline-dark"

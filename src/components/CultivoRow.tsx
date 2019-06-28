@@ -5,6 +5,7 @@ import DetalleCultivo from './DetalleCultivo';
 import EjecutarComando from './EjecutarComando';
 import EliminarCultivo from './EliminarCultivo';
 import ModificarCultivo from './ModificarCultivo';
+import { Usuario } from './Principal';
 
 class CultivoRow extends Component<Props> {
     state = {
@@ -23,7 +24,7 @@ class CultivoRow extends Component<Props> {
     };
 
     render() {
-        const { cultivo } = this.props;
+        const { cultivo, usuario, actualizarCultivos } = this.props;
         const { id, nombre, descripcion, actuadores } = cultivo;
         const { abierto } = this.state;
         return (
@@ -38,7 +39,9 @@ class CultivoRow extends Component<Props> {
                 </td>
                 <td>{ descripcion }</td>
                 <td>
-                    <EliminarCultivo>
+                    <EliminarCultivo
+                        cultivo={ cultivo }
+                        actualizarCultivos={ actualizarCultivos }>
                         <MdDeleteForever size={ 24 } />
                     </EliminarCultivo>
                 </td>
@@ -48,7 +51,10 @@ class CultivoRow extends Component<Props> {
                     </EjecutarComando>
                 </td>
                 <td>
-                    <ModificarCultivo cultivo={ cultivo }>
+                    <ModificarCultivo
+                        cultivo={ cultivo }
+                        usuario={ usuario }
+                        actualizarCultivos={ actualizarCultivos }>
                         <MdSettings size={ 24 } />
                     </ModificarCultivo>
                 </td>
@@ -59,6 +65,8 @@ class CultivoRow extends Component<Props> {
 
 interface Props {
     cultivo: Cultivo;
+    usuario: Usuario;
+    actualizarCultivos: () => void;
 }
 
 export default CultivoRow;

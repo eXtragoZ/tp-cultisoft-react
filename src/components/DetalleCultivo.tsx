@@ -13,7 +13,7 @@ class DetalleCultivo extends Component<Props> {
 
     render(): ReactNode {
         const {
-            cultivo: { nombre, descripcion, actuadores = [], sensores = [] },
+            cultivo: { id, nombre, descripcion, actuadores = [], sensores = [] },
             abierto,
             cerrar,
         } = this.props;
@@ -28,8 +28,8 @@ class DetalleCultivo extends Component<Props> {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    { descripcion }
-                    <Container>
+                    { descripcion } - Codigo: { id }
+                    <Container style={ { display: 'flex', justifyContent: 'center' } }>
                         <Row>
                             <Col style={ { flexGrow: 0 } }>
                                 { sensores.map((sensor, index) => (

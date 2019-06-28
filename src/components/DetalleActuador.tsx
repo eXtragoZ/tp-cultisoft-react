@@ -6,7 +6,15 @@ import IndicadorEstado from './IndicadorEstado';
 class DetalleActuador extends Component<Props> {
     render(): ReactNode {
         const {
-            actuador: { id, descripcion, tipo, estado, activarDesde, activarHasta },
+            actuador: {
+                id,
+                descripcion,
+                tipo,
+                estado,
+                activarDesde,
+                activarHasta,
+                comandos = [],
+            },
         } = this.props;
 
         return (
@@ -19,7 +27,7 @@ class DetalleActuador extends Component<Props> {
                     <Table responsive size="sm">
                         <tbody>
                             <tr>
-                                <td style={ style.Td }>ID</td>
+                                <td style={ style.Td }>Codigo</td>
                                 <td>{ id }</td>
                             </tr>
                             <tr>
@@ -33,7 +41,7 @@ class DetalleActuador extends Component<Props> {
                             <tr>
                                 <td style={ style.Td }>Estado</td>
                                 <td>
-                                    <IndicadorEstado estado={ estado } />
+                                    { estado ? <IndicadorEstado estado={ estado } /> : '-' }
                                 </td>
                             </tr>
                             { activarDesde && (
@@ -47,10 +55,14 @@ class DetalleActuador extends Component<Props> {
                                     Comandos
                                 </td>
                             </tr>
-                            <tr>
-                                <td style={ style.Td }>18/06/2019 23:30</td>
-                                <td>Prender</td>
-                            </tr>
+                            { comandos.slice(0, 5).map(({ desde, hasta, comando }) => (
+                                <tr key={ desde }>
+                                    <td style={ style.Td }>
+                                        { desde } - { hasta }
+                                    </td>
+                                    <td>{ comando }</td>
+                                </tr>
+                            )) }
                         </tbody>
                     </Table>
                 </Card.Body>

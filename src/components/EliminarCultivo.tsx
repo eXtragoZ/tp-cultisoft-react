@@ -2,6 +2,8 @@ import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react'
 import { Button } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
+import cultiFetch from '../CultiAPI';
+import { Cultivo } from './Cultivos';
 
 class EliminarCultivo extends Component<Props> {
     state = {
@@ -19,13 +21,28 @@ class EliminarCultivo extends Component<Props> {
     };
 
     listo = () => {
-        this.setState({ listo: false });
+        const { actualizarCultivos } = this.props;
+        this.setState({ listo: false }, actualizarCultivos);
     };
 
-    enviar = async () => {
+    eliminar = async () => {
+        const { cultivo } = this.props;
         this.setState({ cargando: true });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        this.setState({ eliminacion: false, listo: true, cargando: false });
+        try {
+            // const json =
+            await cultiFetch('cultivo/modificarCultivo/', {
+                ...cultivo,
+                eliminado: true,
+            });
+            this.setState({ abierto: false, listo: true });
+        } catch (error) {
+            if (error.message === 'Failed to fetch') {
+                this.setState({ error: 'Error de conexión' });
+            } else {
+                this.setState({ error: error.message || 'Error de conexión' });
+            }
+        }
+        this.setState({ cargando: false });
     };
 
     render(): ReactNode {
@@ -42,10 +59,10 @@ class EliminarCultivo extends Component<Props> {
                     confirmBtnText={
                         this.state.cargando ? (
                             <PacmanLoader
-                                    size={ 10 }
-                                    color="#ffc107"
-                                    css={ 'margin: 5px 40px 15px 0px;' }
-                                />
+                                size={ 10 }
+                                color="#ffc107"
+                                css={ 'margin: 5px 40px 15px 0px;' }
+                            />
                         ) : (
                             'Si, eliminarlo!'
                         )
@@ -53,7 +70,7 @@ class EliminarCultivo extends Component<Props> {
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title="Estas seguro?"
-                    onConfirm={ this.enviar }
+                    onConfirm={ this.eliminar }
                     onCancel={ this.cerrar }
                     show={ this.state.eliminacion }
                     disabled={ this.state.cargando }>
@@ -73,6 +90,8 @@ class EliminarCultivo extends Component<Props> {
 
 interface Props {
     children: ReactNode;
+    cultivo: Cultivo;
+    actualizarCultivos: () => void;
 }
 
 export default EliminarCultivo;

@@ -53,12 +53,12 @@ class ConfiguracionActuadores extends Component<Props, State> {
                     <Table responsive striped size="sm">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Codigo</th>
                                 <th>Descripción</th>
                                 <th>Tipo</th>
                                 <th>Estado</th>
-                                <th>Activar Desde</th>
-                                <th>Activar Hasta</th>
+                                { false && <th>Activar Desde</th> }
+                                { false && <th>Activar Hasta</th> }
                                 <th>Eliminar</th>
                                 <th>Editar</th>
                             </tr>
@@ -78,8 +78,6 @@ class ConfiguracionActuadores extends Component<Props, State> {
                             )) }
 
                             <tr key="add">
-                                <td />
-                                <td />
                                 <td />
                                 <td />
                                 <td />

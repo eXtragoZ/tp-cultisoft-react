@@ -11,7 +11,7 @@ class ConfiguracionSensor extends Component<Props, State> {
 
         this.state = {
             sensor: props.sensor,
-            edicion: false,
+            edicion: !props.sensor.id,
         };
     }
 
@@ -112,7 +112,7 @@ class ConfiguracionSensor extends Component<Props, State> {
                             />
                             <InputGroup.Append>
                                 <InputGroup.Text>
-                                    { tipo && this.unidades[tipo] }
+                                    { tipo && (this.unidades[tipo] || '') }
                                 </InputGroup.Text>
                             </InputGroup.Append>
                         </InputGroup>
