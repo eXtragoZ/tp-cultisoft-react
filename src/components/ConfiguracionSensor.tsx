@@ -110,14 +110,16 @@ class ConfiguracionSensor extends Component<Props, State> {
                                 id="valorMinimo"
                                 onChange={ this.handleChange }
                             />
-                            <InputGroup.Append>
-                                <InputGroup.Text>
-                                    { tipo && (this.unidades[tipo] || '') }
-                                </InputGroup.Text>
-                            </InputGroup.Append>
+                            { tipo && (
+                                <InputGroup.Append>
+                                    <InputGroup.Text>
+                                        { this.unidades[tipo] || '' }
+                                    </InputGroup.Text>
+                                </InputGroup.Append>
+                            ) }
                         </InputGroup>
                     ) : (
-                        `${valorMinimo} ${tipo ? this.unidades[tipo] : ''}`
+                        valorMinimo && `${valorMinimo} ${tipo ? this.unidades[tipo] : ''}`
                     ) }
                 </td>
                 <td>
@@ -129,14 +131,16 @@ class ConfiguracionSensor extends Component<Props, State> {
                                 id="valorMaximo"
                                 onChange={ this.handleChange }
                             />
-                            <InputGroup.Append>
-                                <InputGroup.Text>
-                                    { tipo && this.unidades[tipo] }
-                                </InputGroup.Text>
-                            </InputGroup.Append>
+                            { tipo && (
+                                <InputGroup.Append>
+                                    <InputGroup.Text>
+                                        { this.unidades[tipo] || '' }
+                                    </InputGroup.Text>
+                                </InputGroup.Append>
+                            ) }
                         </InputGroup>
                     ) : (
-                        `${valorMaximo} ${tipo ? this.unidades[tipo] : ''}`
+                        valorMaximo && `${valorMaximo} ${tipo ? this.unidades[tipo] : ''}`
                     ) }
                 </td>
                 <th>

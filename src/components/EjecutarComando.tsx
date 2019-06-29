@@ -5,20 +5,25 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
 import cultiFetch from '../CultiAPI';
 import { Actuador } from './Cultivos';
-class EjecutarComando extends Component<Props> {
+class EjecutarComando extends Component<Props, State> {
     opciones = ['Prender', 'Apagar'];
-
-    state = {
-        abierto: false,
-        listo: false,
-        cargando: false,
-        opcion: this.opciones[0],
-        actuador: undefined,
-        desde: moment().format('hh:ss'),
-        hasta: moment()
-            .add(1, 'hour')
-            .format('hh:ss'),
-    };
+    constructor(props: Props) {
+        super(props);
+        const { actuadores = [] } = props;
+        this.state = {
+            abierto: false,
+            listo: false,
+            cargando: false,
+            opcion: this.opciones[0],
+            actuador: actuadores[0]
+                ? `${actuadores[0].descripcion} - Codigo: ${actuadores[0].id}`
+                : '',
+            desde: moment().format('hh:ss'),
+            hasta: moment()
+                .add(1, 'hour')
+                .format('hh:ss'),
+        };
+    }
 
     abrir: MouseEventHandler = () => {
         this.setState({ abierto: true });
@@ -41,8 +46,8 @@ class EjecutarComando extends Component<Props> {
         const { actuadores = [] } = this.props;
         const { actuador, opcion, desde, hasta } = this.state;
         const acuadorEntidad = actuadores.find(
-            ({ id, descripcion = 'ID' }) => `${descripcion} ${id}` === actuador,
-        );
+            ({ id, descripcion = 'ID' }) => `${descripcion} - Codigo: ${id}` === actuador,
+        ) || { id: undefined };
         const desdeMoment = moment(desde, 'hh:ss');
         const hastaMoment = moment(hasta, 'hh:ss');
         const dayAfter = desdeMoment.isAfter(hastaMoment);
@@ -51,7 +56,7 @@ class EjecutarComando extends Component<Props> {
         try {
             // const json =
             await cultiFetch('comando/enviarComando/', {
-                actuador: acuadorEntidad,
+                id_actuador: acuadorEntidad.id,
                 tipo: opcion,
                 desde: desdeMoment.format('YYYY-MM-DDThh:ssZ'),
                 hasta: (dayAfter ? hastaMoment.add(1, 'day') : hastaMoment).format(
@@ -72,7 +77,7 @@ class EjecutarComando extends Component<Props> {
     handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
         event: React.FormEvent<HTMLInputElement>,
     ) => {
-        this.setState({ [event.currentTarget.id]: event.currentTarget.value });
+        this.setState({ [event.currentTarget.id]: event.currentTarget.value } as any);
     };
 
     render(): ReactNode {
@@ -111,10 +116,14 @@ class EjecutarComando extends Component<Props> {
                                         as="select"
                                         value={ this.state.actuador }
                                         onChange={ this.handleChange }>
-                                        { actuadores.map(({ id, descripcion = 'Actuador' }) => (
-                                            <option
-                                                key={ id }>{ `${descripcion} - Codigo: ${id}` }</option>
-                                        )) }
+                                        { actuadores.map(
+                                            ({ id, descripcion = 'Actuador' }) => (
+                                                <option
+                                                    key={
+                                                        id
+                                                    }>{ `${descripcion} - Codigo: ${id}` }</option>
+                                            ),
+                                        ) }
                                     </Form.Control>
                                 </Form.Group>
                             </Form.Row>
@@ -183,6 +192,16 @@ class EjecutarComando extends Component<Props> {
 interface Props {
     children: ReactNode;
     actuadores?: Actuador[];
+}
+interface State {
+    abierto: boolean;
+    listo: boolean;
+    cargando: boolean;
+    opcion: string;
+    actuador: string;
+    desde: string;
+    hasta: string;
+    error?: string;
 }
 
 export default EjecutarComando;

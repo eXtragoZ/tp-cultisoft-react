@@ -55,8 +55,8 @@ class DetalleSensor extends Component<Props> {
                                     Valores censados
                                 </td>
                             </tr>
-                            { estados.slice(0, 5).map(({ fechaHora, valor }) => (
-                                <tr key={ fechaHora }>
+                            { estados.reverse().slice(0, 5).map(({ id, fechaHora, valor }) => (
+                                <tr key={ id }>
                                     <td style={ style.Td }>
                                         { moment(fechaHora).format('DD/MM/YYYY hh:ss') }
                                     </td>

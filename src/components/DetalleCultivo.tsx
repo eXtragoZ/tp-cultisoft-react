@@ -1,22 +1,55 @@
+import deepEqual from 'deep-equal';
 import React, { Component, ReactNode } from 'react';
-import { Button, Col, Container, FormControlProps, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
+import cultiFetch from '../CultiAPI';
 import { Cultivo } from './Cultivos';
 import DetalleActuador from './DetalleActuador';
 import DetalleSensor from './DetalleSensor';
 
-class DetalleCultivo extends Component<Props> {
-    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
-        event: React.FormEvent<HTMLInputElement>,
-    ) => {
-        this.setState({ [event.currentTarget.id]: event.currentTarget.value });
+class DetalleCultivo extends Component<Props, State> {
+    timer?: NodeJS.Timeout;
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            cultivo: props.cultivo,
+            error: undefined,
+        };
+    }
+
+    componentDidMount = () => {
+        this.timer = setInterval(this.obtenerCultivo, 5000);
+    };
+
+    componentWillUnmount = () => {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+    };
+
+    obtenerCultivo = async () => {
+        const { cultivo } = this.props;
+        const { cultivo: prevCultivo } = this.state;
+        try {
+            const json = await cultiFetch('cultivo/getCultivo/', cultivo.id);
+            if (!deepEqual(prevCultivo, json.cultivos[0])) {
+                this.setState({ cultivo: json.cultivos[0], error: undefined });
+            }
+        } catch (error) {
+            if (error.message === 'Failed to fetch') {
+                this.setState({ error: 'Error de conexión' });
+            } else {
+                this.setState({ error: error.message || 'Error de conexión' });
+            }
+        }
     };
 
     render(): ReactNode {
+        const { abierto, cerrar } = this.props;
         const {
             cultivo: { id, nombre, descripcion, actuadores = [], sensores = [] },
-            abierto,
-            cerrar,
-        } = this.props;
+            error,
+        } = this.state;
         return (
             <Modal show={ abierto } onHide={ cerrar } centered size="xl">
                 <Modal.Header closeButton>
@@ -45,6 +78,9 @@ class DetalleCultivo extends Component<Props> {
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
+                    { error && (
+                        <div style={ { color: 'red' } }>Error al actualizar datos</div>
+                    ) }
                     <Button variant="secondary" onClick={ cerrar }>
                         Cerrar
                     </Button>
@@ -58,6 +94,10 @@ interface Props {
     cultivo: Cultivo;
     abierto: boolean;
     cerrar: () => void;
+}
+interface State {
+    cultivo: Cultivo;
+    error?: string;
 }
 
 export default DetalleCultivo;

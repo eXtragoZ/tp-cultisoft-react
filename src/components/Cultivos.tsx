@@ -39,12 +39,10 @@ class Cultivos extends Component<Props> {
             <Fragment>
                 <h2>Mis cultivos</h2>
                 <br />
-                { cargando || error ? (
-                    cargando ? (
-                        <div style={ { color: 'yellow' } }>Cargando...</div>
-                    ) : (
-                        <div style={ { color: 'red' } }>Error al cargar los cultivos</div>
-                    )
+                { cargando ? (
+                    <div style={ { color: 'yellow' } }>Cargando...</div>
+                ) : error ? (
+                    <div style={ { color: 'red' } }>Error al cargar los cultivos</div>
                 ) : (
                     <Table responsive striped hover>
                         <thead>

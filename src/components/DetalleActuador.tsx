@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { Component, ReactNode } from 'react';
 import { Card, CardProps, Table } from 'react-bootstrap';
 import { Actuador } from './Cultivos';
@@ -41,7 +42,7 @@ class DetalleActuador extends Component<Props> {
                             <tr>
                                 <td style={ style.Td }>Estado</td>
                                 <td>
-                                    { estado ? <IndicadorEstado estado={ estado } /> : '-' }
+                                    <IndicadorEstado estado={ estado } />
                                 </td>
                             </tr>
                             { activarDesde && (
@@ -55,14 +56,32 @@ class DetalleActuador extends Component<Props> {
                                     Comandos
                                 </td>
                             </tr>
-                            { comandos.slice(0, 5).map(({ desde, hasta, comando }) => (
-                                <tr key={ desde }>
-                                    <td style={ style.Td }>
-                                        { desde } - { hasta }
-                                    </td>
-                                    <td>{ comando }</td>
-                                </tr>
-                            )) }
+                            { comandos
+                                .reverse()
+                                .slice(0, 5)
+                                .map(
+                                    ({
+                                        id: idComando,
+                                        desde,
+                                        hasta,
+                                        tipo: tipoComando,
+                                    }) => (
+                                        <tr key={ idComando }>
+                                            <td style={ style.Td }>
+                                                { desde &&
+                                                    moment(desde).format(
+                                                        'DD/MM/YYYY hh:ss',
+                                                    ) }
+                                                -
+                                                { hasta &&
+                                                    moment(hasta).format(
+                                                        'DD/MM/YYYY hh:ss',
+                                                    ) }
+                                            </td>
+                                            <td>{ tipoComando }</td>
+                                        </tr>
+                                    ),
+                                ) }
                         </tbody>
                     </Table>
                 </Card.Body>

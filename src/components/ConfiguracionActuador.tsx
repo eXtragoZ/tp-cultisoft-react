@@ -98,7 +98,9 @@ class ConfiguracionActuador extends Component<Props, State> {
                         tipo
                     ) }
                 </td>
-                <td>{ estado ? <IndicadorEstado estado={ estado } /> : ' - ' }</td>
+                <td>
+                    <IndicadorEstado estado={ estado } />
+                </td>
                 { false && (
                     <td>
                         { edicion ? (
