@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Table } from 'react-bootstrap';
 import { MdAdd } from 'react-icons/md';
 import cultiFetch from '../CultiAPI';
@@ -54,7 +55,11 @@ class Cultivos extends Component<Props> {
                                 <th>Configuración</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <ReactCSSTransitionGroup
+                            transitionName="list-item"
+                            component="tbody"
+                            transitionAppear
+                            transitionAppearTimeout={ 500 }>
                             { cultivos.map((cultivo) => (
                                 <CultivoRow
                                     key={ cultivo.id }
@@ -77,7 +82,7 @@ class Cultivos extends Component<Props> {
                                     </ModificarCultivo>
                                 </td>
                             </tr>
-                        </tbody>
+                        </ReactCSSTransitionGroup>
                     </Table>
                 ) }
             </Fragment>
