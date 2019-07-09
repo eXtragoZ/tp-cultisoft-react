@@ -54,7 +54,6 @@ class ConfiguracionSensores extends Component<Props, State> {
                                 <th>Codigo</th>
                                 <th>Descripción</th>
                                 <th>Tipo</th>
-                                <th>Estado</th>
                                 <th>Valor Mínimo</th>
                                 <th>Valor Máximo</th>
                                 <th>Eliminar</th>
@@ -76,7 +75,6 @@ class ConfiguracionSensores extends Component<Props, State> {
                             )) }
 
                             <tr key="add">
-                                <td />
                                 <td />
                                 <td />
                                 <td />

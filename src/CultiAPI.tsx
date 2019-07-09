@@ -1,4 +1,5 @@
-export const URL = 'http://192.168.0.100:8080/';
+export const URL = `http://${window.location.hostname}:8080/`;
+// http://localhost:8080/ //`https://${window.location.hostname}:8080/`
 export default async function cultiFetch(path: string, object?: any) {
     const response = await fetch(URL + path, {
         method: 'POST',

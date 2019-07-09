@@ -2,7 +2,6 @@ import React, { Component, ReactNode } from 'react';
 import { Button, FormControl, FormControlProps, InputGroup } from 'react-bootstrap';
 import { MdCheck, MdClose, MdCreate, MdUndo } from 'react-icons/md';
 import { Sensor } from './Cultivos';
-import IndicadorEstado from './IndicadorEstado';
 
 class ConfiguracionSensor extends Component<Props, State> {
     unidades = { Humedad: '%', Temperatura: '°C', Luz: 'lx' };
@@ -34,7 +33,12 @@ class ConfiguracionSensor extends Component<Props, State> {
             return;
         }
         const id = event.currentTarget.id;
-        const value = event.currentTarget.value;
+        const isNumber =
+            (id === 'valorMinimo' || id === 'valorMaximo') &&
+            event.currentTarget.value !== '';
+        const value = isNumber
+            ? parseInt(event.currentTarget.value, 10)
+            : event.currentTarget.value;
         const sensorModificado = {
             ...this.state.sensor,
             [id]: value,
@@ -52,30 +56,51 @@ class ConfiguracionSensor extends Component<Props, State> {
         });
     };
 
+    sensorInvalido = () => {
+        const { descripcion = '' } = this.state.sensor;
+        if (descripcion === '') {
+            return true;
+        }
+        return this.minimoMayorAMaximo();
+    };
+
+    minimoMayorAMaximo = () => {
+        const { valorMinimo, valorMaximo } = this.state.sensor;
+        if (
+            valorMinimo !== undefined &&
+            valorMaximo !== undefined &&
+            Number.isInteger(valorMinimo) &&
+            Number.isInteger(valorMaximo)
+        ) {
+            return valorMinimo >= valorMaximo;
+        }
+        return false;
+    };
+
     render(): ReactNode {
         const {
             sensor: {
                 id,
-                descripcion,
+                descripcion = '',
                 tipo,
-                estado,
                 valorMinimo = '',
                 valorMaximo = '',
                 eliminado,
             },
             edicion,
         } = this.state;
-
+        const unidad = tipo ? this.unidades[tipo] : '';
         return (
             <tr key={ id } style={ eliminado ? { background: 'grey' } : {} }>
                 <td>{ id }</td>
                 <td>
                     { edicion ? (
                         <FormControl
-                            value={ descripcion || '' }
+                            value={ descripcion }
                             size="sm"
                             id="descripcion"
                             onChange={ this.handleChange }
+                            isInvalid={ descripcion === '' }
                         />
                     ) : (
                         descripcion
@@ -99,9 +124,6 @@ class ConfiguracionSensor extends Component<Props, State> {
                     ) }
                 </td>
                 <td>
-                    <IndicadorEstado estado={ estado } />
-                </td>
-                <td>
                     { edicion ? (
                         <InputGroup size="sm">
                             <FormControl
@@ -109,17 +131,16 @@ class ConfiguracionSensor extends Component<Props, State> {
                                 value={ String(valorMinimo) }
                                 id="valorMinimo"
                                 onChange={ this.handleChange }
+                                isInvalid={ this.minimoMayorAMaximo() }
                             />
                             { tipo && (
                                 <InputGroup.Append>
-                                    <InputGroup.Text>
-                                        { this.unidades[tipo] || '' }
-                                    </InputGroup.Text>
+                                    <InputGroup.Text>{ unidad }</InputGroup.Text>
                                 </InputGroup.Append>
                             ) }
                         </InputGroup>
                     ) : (
-                        valorMinimo && `${valorMinimo} ${tipo ? this.unidades[tipo] : ''}`
+                        valorMinimo && `${valorMinimo} ${unidad}`
                     ) }
                 </td>
                 <td>
@@ -130,17 +151,21 @@ class ConfiguracionSensor extends Component<Props, State> {
                                 value={ String(valorMaximo) }
                                 id="valorMaximo"
                                 onChange={ this.handleChange }
+                                isInvalid={ this.minimoMayorAMaximo() }
                             />
                             { tipo && (
                                 <InputGroup.Append>
-                                    <InputGroup.Text>
-                                        { this.unidades[tipo] || '' }
-                                    </InputGroup.Text>
+                                    <InputGroup.Text>{ unidad }</InputGroup.Text>
                                 </InputGroup.Append>
                             ) }
                         </InputGroup>
                     ) : (
-                        valorMaximo && `${valorMaximo} ${tipo ? this.unidades[tipo] : ''}`
+                        valorMaximo && `${valorMaximo} ${unidad}`
+                    ) }
+                    { this.minimoMayorAMaximo() && (
+                        <div style={ { color: 'red', fontSize: '60%' } }>
+                            Mínimo es mayor o igual al máximo
+                        </div>
                     ) }
                 </td>
                 <th>
@@ -155,7 +180,7 @@ class ConfiguracionSensor extends Component<Props, State> {
                     <Button
                         variant="outline-dark"
                         onClick={ this.editar }
-                        disabled={ eliminado }>
+                        disabled={ eliminado || (this.sensorInvalido() && edicion) }>
                         { edicion ? <MdCheck /> : <MdCreate /> }
                     </Button>
                 </th>

@@ -27,6 +27,11 @@ class ConfiguracionActuador extends Component<Props, State> {
         this.onChange(actuadorModificado);
     };
 
+    actuadorInvalido = () => {
+        const { descripcion = '' } = this.state.actuador;
+        return descripcion === '';
+    };
+
     handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
         event: React.FormEvent<HTMLInputElement>,
     ) => {
@@ -56,7 +61,7 @@ class ConfiguracionActuador extends Component<Props, State> {
         const {
             actuador: {
                 id,
-                descripcion,
+                descripcion = '',
                 tipo,
                 estado,
                 activarDesde = '',
@@ -72,10 +77,11 @@ class ConfiguracionActuador extends Component<Props, State> {
                 <td>
                     { edicion ? (
                         <FormControl
-                            value={ descripcion || '' }
+                            value={ descripcion }
                             size="sm"
                             id="descripcion"
                             onChange={ this.handleChange }
+                            isInvalid={ descripcion === '' }
                         />
                     ) : (
                         descripcion
@@ -151,7 +157,7 @@ class ConfiguracionActuador extends Component<Props, State> {
                     <Button
                         variant="outline-dark"
                         onClick={ this.editar }
-                        disabled={ eliminado }>
+                        disabled={ eliminado || (this.actuadorInvalido() && edicion)  }>
                         { edicion ? <MdCheck /> : <MdCreate /> }
                     </Button>
                 </th>

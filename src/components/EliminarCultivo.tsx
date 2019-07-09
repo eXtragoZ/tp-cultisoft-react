@@ -34,7 +34,7 @@ class EliminarCultivo extends Component<Props> {
                 ...cultivo,
                 eliminado: true,
             });
-            this.setState({ abierto: false, listo: true });
+            this.setState({ abierto: false, listo: true, eliminacion: false });
         } catch (error) {
             if (error.message === 'Failed to fetch') {
                 this.setState({ error: 'Error de conexión' });
@@ -67,6 +67,9 @@ class EliminarCultivo extends Component<Props> {
                             'Si, eliminarlo!'
                         )
                     }
+                    cancelBtnText={
+                        'Cancelar'
+                    }
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title="Estas seguro?"
@@ -74,7 +77,7 @@ class EliminarCultivo extends Component<Props> {
                     onCancel={ this.cerrar }
                     show={ this.state.eliminacion }
                     disabled={ this.state.cargando }>
-                    Se eliminaran el cultivo de tu lista!
+                    Se eliminaran el cultivo de tu lista!<br />Y toda su configuración!
                 </SweetAlert>
                 <SweetAlert
                     success

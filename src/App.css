@@ -1,33 +1,19 @@
-.App {
-  text-align: center;
+.modal-xl {
+  max-width: calc(100% - 1rem);
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.modal-xl .container {
+  padding-right: unset;
+  padding-left: unset;
+  margin-right: unset;
+  margin-left: unset;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  max-width: 100%;
 }
 
-.App-link {
-  color: #61dafb;
-}
+.modal-xl .container .row {
+  justify-content: center;
+  width: 100%;
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

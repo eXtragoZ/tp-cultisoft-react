@@ -11,7 +11,7 @@ class DetalleActuador extends Component<Props> {
                 id,
                 descripcion,
                 tipo,
-                estado,
+                estado = 'Apagado',
                 activarDesde,
                 activarHasta,
                 comandos = [],
@@ -19,7 +19,11 @@ class DetalleActuador extends Component<Props> {
         } = this.props;
 
         return (
-            <Card style={ style.Card }>
+            <Card
+                style={ style.Card }
+                border={
+                    estado === 'Encendido' || estado === true ? 'success' : undefined
+                }>
                 <Card.Header as="h6" style={ style.Header }>
                     { 'Actuador ' } { id }
                     { descripcion && ' - ' + descripcion }
@@ -62,21 +66,20 @@ class DetalleActuador extends Component<Props> {
                                 .map(
                                     ({
                                         id: idComando,
+                                        fechaHora,
                                         desde,
                                         hasta,
                                         tipo: tipoComando,
                                     }) => (
                                         <tr key={ idComando }>
                                             <td style={ style.Td }>
-                                                { desde &&
-                                                    moment(desde).format(
-                                                        'DD/MM/YYYY hh:ss',
-                                                    ) }
-                                                -
+                                                { moment(desde || fechaHora).format(
+                                                    'DD/MM/YYYY HH:mm',
+                                                ) }
                                                 { hasta &&
-                                                    moment(hasta).format(
-                                                        'DD/MM/YYYY hh:ss',
-                                                    ) }
+                                                    ` - ${moment(hasta).format(
+                                                        'DD/MM/YYYY HH:mm',
+                                                    )}` }
                                             </td>
                                             <td>{ tipoComando }</td>
                                         </tr>
@@ -95,7 +98,7 @@ interface Props extends CardProps {
 }
 
 const style = {
-    Card: { width: '20rem', margin: '0.5rem', fontSize: 'small' },
+    Card: { minWidth: '20rem', maxWidth: '25rem', margin: '0.5rem', fontSize: 'small' },
     Header: { padding: '.35rem 1.25rem' },
     Body: { padding: 0 },
     Td: { paddingLeft: '1.5rem' },

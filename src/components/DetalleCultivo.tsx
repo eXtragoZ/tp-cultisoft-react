@@ -57,19 +57,21 @@ class DetalleCultivo extends Component<Props, State> {
                         id="contained-modal-title-vcenter"
                         style={ { display: 'flex', alignItems: 'baseline' } }>
                         Detalle de
-                        <h2 style={ { margin: ' 0 .75rem 0 .75rem' } }>{ nombre }</h2>
+                        <h2 style={ { margin: ' 0 .75rem' } }>{ nombre }</h2>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    { descripcion } - Codigo: { id }
+                    <h5 style={ { margin: '0 2rem .75rem 2rem' } }>
+                        { descripcion } - Codigo: { id }
+                    </h5>
                     <Container style={ { display: 'flex', justifyContent: 'center' } }>
                         <Row>
-                            <Col style={ { flexGrow: 0 } }>
+                            <Col>
                                 { sensores.map((sensor, index) => (
                                     <DetalleSensor key={ index } sensor={ sensor } />
                                 )) }
                             </Col>
-                            <Col style={ { flexGrow: 0 } }>
+                            <Col>
                                 { actuadores.map((actuador, index) => (
                                     <DetalleActuador key={ index } actuador={ actuador } />
                                 )) }

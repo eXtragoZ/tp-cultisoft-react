@@ -18,15 +18,26 @@ class EjecutarComando extends Component<Props, State> {
             actuador: actuadores[0]
                 ? `${actuadores[0].descripcion} - Codigo: ${actuadores[0].id}`
                 : '',
-            desde: moment().format('hh:ss'),
+            desde: moment().format('HH:mm'),
             hasta: moment()
                 .add(1, 'hour')
-                .format('hh:ss'),
+                .format('HH:mm'),
         };
     }
 
     abrir: MouseEventHandler = () => {
-        this.setState({ abierto: true });
+        const { actuadores = [] } = this.props;
+        this.setState({
+            abierto: true,
+            opcion: this.opciones[0],
+            actuador: actuadores[0]
+                ? `${actuadores[0].descripcion} - Codigo: ${actuadores[0].id}`
+                : '',
+            desde: moment().format('HH:mm'),
+            hasta: moment()
+                .add(5, 'minute')
+                .format('HH:mm'),
+        });
     };
 
     cerrar = () => {
@@ -38,8 +49,36 @@ class EjecutarComando extends Component<Props, State> {
     };
 
     enviarDeshabilitado = () => {
-        const { desde, hasta, cargando } = this.state;
-        return cargando || desde === '' || hasta === '';
+        const { cargando } = this.state;
+        return cargando || this.desdeInvalido() || this.hastaInvalido();
+    };
+
+    desdeInvalido = () => {
+        const { desde } = this.state;
+        const desdeMoment = moment(desde, 'HH:mm');
+        if (!desdeMoment.isValid()) {
+            return true;
+        }
+        return false;
+    };
+
+    hastaInvalido = () => {
+        const { hasta } = this.state;
+        const hastaMoment = moment(hasta, 'HH:mm');
+        if (!hastaMoment.isValid()) {
+            return true;
+        }
+        return false;
+    };
+
+    hastaDiaSiguiente = () => {
+        const { desde, hasta } = this.state;
+        const desdeMoment = moment(desde, 'HH:mm');
+        const hastaMoment = moment(hasta, 'HH:mm');
+        if (desdeMoment.isValid() && hastaMoment.isValid()) {
+            return desdeMoment.isSameOrAfter(hastaMoment);
+        }
+        return false;
     };
 
     enviar = async () => {
@@ -48,9 +87,9 @@ class EjecutarComando extends Component<Props, State> {
         const acuadorEntidad = actuadores.find(
             ({ id, descripcion = 'ID' }) => `${descripcion} - Codigo: ${id}` === actuador,
         ) || { id: undefined };
-        const desdeMoment = moment(desde, 'hh:ss');
-        const hastaMoment = moment(hasta, 'hh:ss');
-        const dayAfter = desdeMoment.isAfter(hastaMoment);
+        const desdeMoment = moment(desde, 'HH:mm');
+        const hastaMoment = moment(hasta, 'HH:mm');
+        const dayAfter = desdeMoment.isSameOrAfter(hastaMoment);
 
         this.setState({ cargando: true });
         try {
@@ -58,9 +97,9 @@ class EjecutarComando extends Component<Props, State> {
             await cultiFetch('comando/enviarComando/', {
                 id_actuador: acuadorEntidad.id,
                 tipo: opcion,
-                desde: desdeMoment.format('YYYY-MM-DDThh:ssZ'),
+                desde: desdeMoment.format('YYYY-MM-DDTHH:mmZ'),
                 hasta: (dayAfter ? hastaMoment.add(1, 'day') : hastaMoment).format(
-                    'YYYY-MM-DDThh:ssZ',
+                    'YYYY-MM-DDTHH:mmZ',
                 ),
             });
             this.setState({ abierto: false, listo: true });
@@ -135,6 +174,7 @@ class EjecutarComando extends Component<Props, State> {
                                             type="time"
                                             value={ this.state.desde }
                                             onChange={ this.handleChange }
+                                            isInvalid={ this.desdeInvalido() }
                                         />
                                         <InputGroup.Append>
                                             <InputGroup.Text id="hs">hs</InputGroup.Text>
@@ -148,11 +188,21 @@ class EjecutarComando extends Component<Props, State> {
                                             type="time"
                                             value={ this.state.hasta }
                                             onChange={ this.handleChange }
+                                            isInvalid={ this.hastaInvalido() }
                                         />
                                         <InputGroup.Append>
                                             <InputGroup.Text id="hs">hs</InputGroup.Text>
                                         </InputGroup.Append>
                                     </InputGroup>
+                                    { this.hastaDiaSiguiente() && (
+                                        <div
+                                            style={ {
+                                                marginTop: '.25rem',
+                                                fontSize: '80%',
+                                            } }>
+                                            (Dia siguiente)
+                                        </div>
+                                    ) }
                                 </Form.Group>
                             </Form.Row>
                         </Form>

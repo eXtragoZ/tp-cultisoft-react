@@ -22,22 +22,41 @@ class ModificarCultivo extends Component<Props, State> {
             abierto: false,
             listo: false,
             cargando: false,
-            nombre: props.cultivo.nombre || '',
-            descripcion: props.cultivo.descripcion || '',
+            cerrar: false,
+            nombre: '',
+            descripcion: '',
         };
     }
 
     abrir: MouseEventHandler = () => {
-        this.setState({ abierto: true });
+        const {
+            nombre = '',
+            descripcion = '',
+            sensores = [],
+            actuadores = [],
+        } = this.props.cultivo;
+        this.setState({ abierto: true, nombre, descripcion, sensores, actuadores });
     };
 
     cerrar = () => {
-        this.setState({ abierto: false });
+        if (this.hayModificaciones()) {
+            this.setState({ cerrar: true });
+        } else {
+            this.setState({ abierto: false });
+        }
     };
 
     terminar = () => {
         const { actualizarCultivos } = this.props;
         this.setState({ listo: false }, actualizarCultivos);
+    };
+
+    cerrarTerminar = () => {
+        this.setState({ cerrar: false, abierto: false });
+    };
+
+    cerrarVolver = () => {
+        this.setState({ cerrar: false });
     };
 
     enviar = async () => {
@@ -133,7 +152,6 @@ class ModificarCultivo extends Component<Props, State> {
     };
 
     guardarDeshabilitado() {
-        const { cultivo } = this.props;
         const {
             cargando,
             nombre,
@@ -141,39 +159,50 @@ class ModificarCultivo extends Component<Props, State> {
             sensores = [],
             actuadores = [],
         } = this.state;
-        if (cargando) {
+        if (cargando || !nombre.length || !descripcion.length) {
             return true;
         }
+        if (sensores.some((sensor) => this.sensorInvalido(sensor))) {
+            return true;
+        }
+        if (actuadores.some((actuador) => this.actuadorInvalido(actuador))) {
+            return true;
+        }
+        return !this.hayModificaciones();
+    }
+
+    hayModificaciones() {
+        const { cultivo } = this.props;
+        const { nombre, descripcion, sensores = [], actuadores = [] } = this.state;
         if ((cultivo.nombre || '') !== nombre) {
-            return false;
+            return true;
         }
         if ((cultivo.descripcion || '') !== descripcion) {
-            return false;
+            return true;
         }
-
-        const sensoresAgregados = sensores.filter(
+        const sensoresAgregados = sensores.some(
             (sensor) => !sensor.id && !sensor.eliminado,
         );
-        const sensoresModificados = sensores.filter(
+        const sensoresModificados = sensores.some(
             (sensor) => sensor.id && this.esModificado(sensor, this.sensorPorId(sensor.id)),
         );
-        const actuadoresAgregados = actuadores.filter(
+        const actuadoresAgregados = actuadores.some(
             (actuador) => !actuador.id && !actuador.eliminado,
         );
-        const actuadoresModificados = actuadores.filter(
+        const actuadoresModificados = actuadores.some(
             (actuador) =>
                 actuador.id &&
                 this.esModificado(actuador, this.actuadorPorId(actuador.id)),
         );
         if (
-            sensoresAgregados.length ||
-            sensoresModificados.length ||
-            actuadoresAgregados.length ||
-            actuadoresModificados.length
+            sensoresAgregados ||
+            sensoresModificados ||
+            actuadoresAgregados ||
+            actuadoresModificados
         ) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     esModificado = (objeto1: any, objeto2: any) => {
@@ -186,6 +215,27 @@ class ModificarCultivo extends Component<Props, State> {
                 !(objeto1[key] === '' && !objeto2[key]) &&
                 !(objeto2[key] === '' && !objeto1[key]),
         );
+    };
+
+    sensorInvalido = ({ valorMinimo, valorMaximo, descripcion }: Sensor) => {
+        if ((descripcion || '') === '') {
+            return true;
+        }
+        if (
+            valorMinimo !== undefined &&
+            valorMaximo !== undefined &&
+            Number.isInteger(valorMinimo) &&
+            Number.isInteger(valorMaximo)
+        ) {
+            return valorMinimo >= valorMaximo;
+        }
+        return false;
+    };
+    actuadorInvalido = ({ descripcion }: Actuador) => {
+        if ((descripcion || '') === '') {
+            return true;
+        }
+        return false;
     };
 
     sensorPorId = (id: number) => {
@@ -238,6 +288,7 @@ class ModificarCultivo extends Component<Props, State> {
                                 value={ nombre }
                                 id="nombre"
                                 onChange={ this.handleChange }
+                                isInvalid={ !nombre.length }
                             />
                         </Modal.Title>
                     </Modal.Header>
@@ -250,6 +301,7 @@ class ModificarCultivo extends Component<Props, State> {
                                 onChange={ this.handleChange }
                                 as="textarea"
                                 rows="2"
+                                isInvalid={ !descripcion.length }
                             />
                         </FormGroup>
                         <ConfiguracionSensores
@@ -289,6 +341,17 @@ class ModificarCultivo extends Component<Props, State> {
                     show={ this.state.listo }>
                     Tus cambios fueron guardados!
                 </SweetAlert>
+                <SweetAlert
+                    warning
+                    showCancel
+                    title="No se guardaran tus cambios!"
+                    confirmBtnText="Confirmar"
+                    cancelBtnText="Volver"
+                    onCancel={ this.cerrarVolver }
+                    onConfirm={ this.cerrarTerminar }
+                    show={ this.state.cerrar }>
+                    ¿Estas seguro?
+                </SweetAlert>
             </Fragment>
         );
     }
@@ -305,6 +368,7 @@ interface State {
     abierto: boolean;
     listo: boolean;
     cargando: boolean;
+    cerrar: boolean;
     nombre: string;
     descripcion: string;
     sensores?: Sensor[];

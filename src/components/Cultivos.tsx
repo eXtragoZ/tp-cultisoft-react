@@ -101,7 +101,7 @@ export interface Actuador {
     id?: number;
     descripcion?: string;
     tipo?: 'Humedad' | 'Temperatura' | 'Luz';
-    estado?: 'Encendido' | 'Apagado';
+    estado?: 'Encendido' | 'Apagado' | boolean;
     activarDesde?: string;
     activarHasta?: string;
     eliminado: boolean;
