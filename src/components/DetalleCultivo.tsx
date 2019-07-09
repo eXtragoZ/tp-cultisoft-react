@@ -18,7 +18,7 @@ class DetalleCultivo extends Component<Props, State> {
     }
 
     componentDidMount = () => {
-        this.timer = setInterval(this.obtenerCultivo, 5000);
+        this.timer = setInterval(this.obtenerCultivo, 2000);
     };
 
     componentWillUnmount = () => {
@@ -28,6 +28,9 @@ class DetalleCultivo extends Component<Props, State> {
     };
 
     obtenerCultivo = async () => {
+        if (!this.props.abierto) {
+            return;
+        }
         const { cultivo } = this.props;
         const { cultivo: prevCultivo } = this.state;
         try {

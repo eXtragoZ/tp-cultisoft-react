@@ -1,5 +1,6 @@
 import moment from 'moment';
 import React, { Component, ReactNode } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Card, CardProps, Table } from 'react-bootstrap';
 import { FaAngleDoubleDown, FaAngleDoubleUp } from 'react-icons/fa';
 import { MdReportProblem } from 'react-icons/md';
@@ -83,11 +84,21 @@ class DetalleSensor extends Component<Props> {
                                     Valores censados
                                 </td>
                             </tr>
+                        </tbody>
+                        <ReactCSSTransitionGroup
+                            transitionName="list-item"
+                            component="tbody"
+                            transitionAppear
+                            transitionAppearTimeout={ 500 }
+                            transitionEnter
+                            transitionEnterTimeout={ 500 }
+                            transitionLeave
+                            transitionLeaveTimeout={ 300 }>
                             { estados
                                 .reverse()
                                 .slice(0, 5)
                                 .map(({ id, fechaHora, valor }) => (
-                                    <tr key={ id }>
+                                    <tr key={ id } style={ { width: '100%' } }>
                                         <td style={ style.Td }>
                                             { moment(fechaHora).format('DD/MM/YYYY HH:mm') }
                                         </td>
@@ -120,7 +131,7 @@ class DetalleSensor extends Component<Props> {
                                         </td>
                                     </tr>
                                 )) }
-                        </tbody>
+                        </ReactCSSTransitionGroup>
                     </Table>
                 </Card.Body>
             </Card>
