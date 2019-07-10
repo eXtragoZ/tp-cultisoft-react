@@ -26,10 +26,14 @@ class DetalleSensor extends Component<Props> {
         const mayorAlRango =
             valorMaximo !== undefined &&
             ultimoEstado !== undefined &&
+            Number.isInteger(valorMaximo) &&
+            Number.isInteger(ultimoEstado) &&
             valorMaximo < ultimoEstado.valor;
         const menorAlRango =
             valorMinimo !== undefined &&
             ultimoEstado !== undefined &&
+            Number.isInteger(valorMinimo) &&
+            Number.isInteger(ultimoEstado) &&
             valorMinimo > ultimoEstado.valor;
         const fueraDeRango = mayorAlRango || menorAlRango;
         return (
@@ -106,6 +110,8 @@ class DetalleSensor extends Component<Props> {
                                             { valor } { unidad }{ ' ' }
                                             { valorMinimo !== undefined &&
                                                 valor !== undefined &&
+                                                Number.isInteger(valorMinimo) &&
+                                                Number.isInteger(valor) &&
                                                 valorMinimo > valor && [
                                                     <MdReportProblem
                                                         key="atencion"
@@ -118,6 +124,8 @@ class DetalleSensor extends Component<Props> {
                                                 ] }
                                             { valorMaximo !== undefined &&
                                                 valor !== undefined &&
+                                                Number.isInteger(valorMaximo) &&
+                                                Number.isInteger(valor) &&
                                                 valorMaximo < valor && [
                                                     <MdReportProblem
                                                         key="atencion"
