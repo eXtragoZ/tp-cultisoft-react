@@ -15,23 +15,23 @@ class App extends Component<{}, State> {
     };
     render(): ReactNode {
         const { usuario } = this.state;
-        console.log(usuario)
+        console.log(usuario);
         return (
             <Router>
                 <div className='App'>
                     <Menu />
-                    <Jumbotron fluid style={{ minHeight: 'calc(100vh - 56px)', margin: 0 }}>
+                    <Jumbotron fluid style={ { minHeight: 'calc(100vh - 56px)', margin: 0 } }>
                         <Switch>
-                            {usuario && <Redirect from='/login' to='/cultivos' />}
+                            { usuario && <Redirect from='/login' to='/cultivos' /> }
                             <Route path='/login'>
-                                <Login onLogin={this.onLogin} />
+                                <Login onLogin={ this.onLogin } />
                             </Route>
-                            {!usuario && <Redirect to='/login' />}
+                            { !usuario && <Redirect to='/login' /> }
                             <Route path='/cultivos'>
-                                {usuario && <Cultivos usuario={usuario} />}
+                                { usuario && <Cultivos usuario={ usuario } /> }
                             </Route>
                             <Route path='/guias'>
-                                {usuario && <Guias usuario={usuario}/>}
+                                { usuario && <Guias usuario={ usuario } /> }
                             </Route>
                             <Redirect to='/login' />
                         </Switch>

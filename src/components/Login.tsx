@@ -3,6 +3,8 @@ import { Button, Col, Form, Modal } from 'react-bootstrap';
 import { PacmanLoader } from 'react-spinners';
 import { Usuario } from '../App';
 import cultiFetch from '../CultiAPI';
+import {ReactComponent as Plant} from '../images/plant.svg';
+import drawPlant from '../images/drawPant'
 
 class Login extends Component<Props> {
     state = {
@@ -12,6 +14,9 @@ class Login extends Component<Props> {
         error: undefined,
         loginDeshabilitado: false,
     };
+    componentDidMount() {
+        drawPlant();
+    }
 
     login = async () => {
         const { onLogin } = this.props;
@@ -54,8 +59,10 @@ class Login extends Component<Props> {
         const { cargando, usuario, password, error } = this.state;
         return (
             <Modal show onHide={() => {}} centered>
+                <Plant className="backgroudPlant" />
+
                 <Modal.Header>
-                    <Modal.Title id='contained-modal-title-vcenter'>Login</Modal.Title>
+                    <Modal.Title id='contained-modal-title-vcenter'>Cultisoft login</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={this.login}>
@@ -79,6 +86,7 @@ class Login extends Component<Props> {
                         {cargando ? <PacmanLoader size={10} color='#ffc107' css={'margin: 2px 40px 12px 0px;'} /> : 'Entrar'}
                     </Button>
                 </Modal.Footer>
+
             </Modal>
         );
     }
