@@ -2,10 +2,10 @@ import React, { Component, Fragment } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Table } from 'react-bootstrap';
 import { MdAdd } from 'react-icons/md';
+import { Usuario } from '../App';
 import cultiFetch from '../CultiAPI';
 import CultivoRow from './CultivoRow';
 import ModificarCultivo from './ModificarCultivo';
-import { Usuario } from './Principal';
 
 class Cultivos extends Component<Props> {
     state: { cultivos: Cultivo[]; cargando: boolean; error?: string } = {
@@ -45,7 +45,7 @@ class Cultivos extends Component<Props> {
                 ) : error ? (
                     <div style={ { color: 'red' } }>Error al cargar los cultivos</div>
                 ) : (
-                    <Table responsive striped hover>
+                    <Table responsive hover >
                         <thead>
                             <tr>
                                 <th>Nombre</th>

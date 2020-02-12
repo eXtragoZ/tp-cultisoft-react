@@ -48,3 +48,43 @@
   transition: opacity 300ms ease-in, transform 300ms ease-in;
   transform:translate(0, 0em) scale(0,0);
 }
+
+.jumbotron {
+  padding: 2rem 3rem;
+}
+.jumbotron >h2 {
+  text-align: center;
+  color: #47b368;
+}
+.bg-primary {
+  background-color: #47b368 !important;
+}
+.navbar-light .navbar-brand {
+  color: #f1f1f1;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+  color: #f1f1f1;
+}
+.table {
+  color: #55754f;
+}
+
+.table th, .table td { 
+  border-top: 1px solid rgba(70, 214, 44, 0.1);
+}
+
+.table thead th {
+  border-bottom: 2px solid rgba(70, 214, 44, 0.1);
+}
+.btn-outline-dark:disabled:hover {
+  color: #343a40;
+}
+
+.btn-secondary, .badge-danger {
+  background-color: #f56167;
+}
+
+.btn-primary {
+  background-color: #4cc5a3;
+}

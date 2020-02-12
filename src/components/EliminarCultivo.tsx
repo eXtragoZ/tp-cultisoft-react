@@ -71,7 +71,6 @@ class EliminarCultivo extends Component<Props> {
                         'Cancelar'
                     }
                     confirmBtnBsStyle="danger"
-                    cancelBtnBsStyle="default"
                     title="Estas seguro?"
                     onConfirm={ this.eliminar }
                     onCancel={ this.cerrar }

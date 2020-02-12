@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { Button, Col, Form, FormControlProps, Modal } from 'react-bootstrap';
 import { PacmanLoader } from 'react-spinners';
 import cultiFetch from '../CultiAPI';
-import { Usuario } from './Principal';
+import { Usuario } from '../App';
 
 class Login extends Component<Props> {
     state = {
@@ -35,9 +35,7 @@ class Login extends Component<Props> {
         this.setState({ cargando: false });
     };
 
-    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
-        event: React.FormEvent<HTMLInputElement>,
-    ) => {
+    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (event: React.FormEvent<HTMLInputElement>) => {
         this.setState({
             [event.currentTarget.id]: event.currentTarget.value,
             error: undefined,
@@ -55,45 +53,30 @@ class Login extends Component<Props> {
     render(): ReactNode {
         const { cargando, usuario, password, error } = this.state;
         return (
-            <Modal show onHide={ () => {} } centered>
+            <Modal show onHide={() => {}} centered>
                 <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter">Login</Modal.Title>
+                    <Modal.Title id='contained-modal-title-vcenter'>Login</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={ this.login }>
+                    <Form onSubmit={this.login}>
                         <Form.Row>
-                            <Form.Group as={ Col } controlId="usuario">
+                            <Form.Group as={Col} controlId='usuario'>
                                 <Form.Label>Usuario</Form.Label>
-                                <Form.Control
-                                    value={ usuario }
-                                    onChange={ this.handleChange }
-                                />
+                                <Form.Control value={usuario} onChange={this.handleChange} />
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
-                            <Form.Group as={ Col } controlId="password">
+                            <Form.Group as={Col} controlId='password'>
                                 <Form.Label>Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={ password }
-                                    onChange={ this.handleChange }
-                                />
+                                <Form.Control type='password' value={password} onChange={this.handleChange} />
                             </Form.Group>
                         </Form.Row>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    { error && <div style={ { color: 'red' } }>{ error }</div> }
-                    <Button onClick={ this.login } disabled={ this.loginDeshabilitado() }>
-                        { cargando ? (
-                            <PacmanLoader
-                                size={ 10 }
-                                color="#ffc107"
-                                css={ 'margin: 2px 40px 12px 0px;' }
-                            />
-                        ) : (
-                            'Entrar'
-                        ) }
+                    {error && <div style={{ color: 'red' }}>{error}</div>}
+                    <Button onClick={this.login} disabled={this.loginDeshabilitado()}>
+                        {cargando ? <PacmanLoader size={10} color='#ffc107' css={'margin: 2px 40px 12px 0px;'} /> : 'Entrar'}
                     </Button>
                 </Modal.Footer>
             </Modal>

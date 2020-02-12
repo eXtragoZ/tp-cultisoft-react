@@ -13,7 +13,7 @@ import cultiFetch from '../CultiAPI';
 import ConfiguracionActuadores from './ConfiguracionActuadores';
 import ConfiguracionSensores from './ConfiguracionSensores';
 import { Actuador, Cultivo, Sensor } from './Cultivos';
-import { Usuario } from './Principal';
+import { Usuario } from '../App';
 
 class ModificarCultivo extends Component<Props, State> {
     constructor(props: Props) {

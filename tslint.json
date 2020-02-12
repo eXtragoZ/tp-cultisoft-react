@@ -10,7 +10,6 @@
             "avoid-template"
         ],
         "member-access": [false, "check-accessor"],
-        "max-line-length": [true, 100],
         "interface-name": false,
         "object-literal-sort-keys": false,
         "jsx-boolean-value": [true, "never"],

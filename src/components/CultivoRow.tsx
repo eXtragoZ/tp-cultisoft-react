@@ -1,11 +1,11 @@
 import React, { Component, MouseEventHandler } from 'react';
 import { MdDeleteForever, MdPlayArrow, MdSettings } from 'react-icons/md';
+import { Usuario } from '../App';
 import { Cultivo } from './Cultivos';
 import DetalleCultivo from './DetalleCultivo';
 import EjecutarComando from './EjecutarComando';
 import EliminarCultivo from './EliminarCultivo';
 import ModificarCultivo from './ModificarCultivo';
-import { Usuario } from './Principal';
 
 class CultivoRow extends Component<Props> {
     state = {
