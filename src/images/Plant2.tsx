@@ -17,7 +17,6 @@ function drawStems() {
 function drawLeaves() {
     const paths = document.querySelectorAll('#leaves path') as any;
     for (const path of paths) {
-        const length = path.getTotalLength();
         path.style.transition = 'none';
         const target = path.style.transform;
         path.style.transform = target + ' scale(0)';

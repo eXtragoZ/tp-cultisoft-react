@@ -1,12 +1,12 @@
 import deepEqual from 'deep-equal';
-import React, { Component, ReactNode } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
 import cultiFetch from '../CultiAPI';
 import { Cultivo } from './Cultivos';
 import DetalleActuador from './DetalleActuador';
 import DetalleSensor from './DetalleSensor';
 
-class DetalleCultivo extends Component<Props, State> {
+class DetalleCultivo extends PureComponent<Props, State> {
     timer?: NodeJS.Timeout;
     constructor(props: Props) {
         super(props);
@@ -32,12 +32,9 @@ class DetalleCultivo extends Component<Props, State> {
             return;
         }
         const { cultivo } = this.props;
-        const { cultivo: prevCultivo } = this.state;
         try {
             const json = await cultiFetch('cultivo/getCultivo/', cultivo.id);
-            if (!deepEqual(prevCultivo, json.cultivos[0])) {
-                this.setState({ cultivo: json.cultivos[0], error: undefined });
-            }
+            this.setState({ cultivo: json.cultivos[0], error: undefined });
         } catch (error) {
             if (error.message === 'Failed to fetch') {
                 this.setState({ error: 'Error de conexión' });
@@ -47,7 +44,7 @@ class DetalleCultivo extends Component<Props, State> {
         }
     };
 
-    render(): ReactNode {
+    render() {
         const { abierto, cerrar } = this.props;
         const {
             cultivo: { id, nombre, descripcion, actuadores = [], sensores = [] },

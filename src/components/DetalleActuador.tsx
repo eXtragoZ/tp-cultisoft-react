@@ -1,12 +1,12 @@
 import moment from 'moment';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Card, CardProps, Table } from 'react-bootstrap';
 import { MdClose, MdDoneAll, MdSchedule } from 'react-icons/md';
 import { Actuador } from './Cultivos';
 import IndicadorEstado from './IndicadorEstado';
 
-class DetalleActuador extends Component<Props> {
+class DetalleActuador extends PureComponent<Props> {
     render() {
         const {
             actuador: {

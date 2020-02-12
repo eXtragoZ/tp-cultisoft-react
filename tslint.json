@@ -16,6 +16,7 @@
         "jsx-curly-spacing": [true, "always"],
         "jsx-alignment": false,
         "jsx-space-before-trailing-slash": true,
-        "jsx-no-multiline-js": false
+        "jsx-no-multiline-js": false,
+        "jsx-wrap-multiline": false
     }
 }

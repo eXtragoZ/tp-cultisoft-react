@@ -1,14 +1,24 @@
 import moment from 'moment';
-import React, { Component, ReactNode } from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Card, CardProps, Table } from 'react-bootstrap';
 import { FaAngleDoubleDown, FaAngleDoubleUp } from 'react-icons/fa';
 import { MdReportProblem } from 'react-icons/md';
 import { Sensor } from './Cultivos';
 import IndicadorEstado from './IndicadorEstado';
+import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ReferenceLine } from 'recharts';
 
-class DetalleSensor extends Component<Props> {
+class DetalleSensor extends PureComponent<Props> {
     unidades = { Humedad: '%', Temperatura: '°C', Luz: 'lx' };
+    formatDate = (fechaHora: string | number) => moment(fechaHora).format('DD/MM/YYYY HH:mm');
+
+    formatHour = (fechaHora: string | number) => moment(fechaHora).format('HH:mm');
+    formatValue = (value: string | number) => {
+        const { tipo } = this.props.sensor;
+        const unidad = tipo ? this.unidades[ tipo ] : '';
+        return `${ value } ${ unidad }`;
+    };
+
     render(): ReactNode {
         const {
             sensor: {
@@ -21,8 +31,7 @@ class DetalleSensor extends Component<Props> {
                 estados = [],
             },
         } = this.props;
-        const unidad = tipo ? this.unidades[tipo] : '';
-        const ultimoEstado = estados[estados.length - 1];
+        const ultimoEstado = estados[ estados.length - 1 ];
         const mayorAlRango =
             valorMaximo !== undefined &&
             ultimoEstado !== undefined &&
@@ -36,6 +45,7 @@ class DetalleSensor extends Component<Props> {
             Number.isInteger(ultimoEstado) &&
             valorMinimo > ultimoEstado.valor;
         const fueraDeRango = mayorAlRango || menorAlRango;
+
         return (
             <Card style={ style.Card } border={ fueraDeRango ? 'danger' : undefined }>
                 <Card.Header as="h6" style={ style.Header }>
@@ -70,7 +80,7 @@ class DetalleSensor extends Component<Props> {
                                 <tr>
                                     <td style={ style.Td }>Valor minimo</td>
                                     <td>
-                                        { valorMinimo } { unidad }
+                                        { this.formatValue(valorMinimo) }
                                     </td>
                                 </tr>
                             ) }
@@ -79,7 +89,7 @@ class DetalleSensor extends Component<Props> {
                                 <tr>
                                     <td style={ style.Td }>Valor maximo</td>
                                     <td>
-                                        { valorMaximo } { unidad }
+                                        { this.formatValue(valorMaximo) }
                                     </td>
                                 </tr>
                             ) }
@@ -99,15 +109,15 @@ class DetalleSensor extends Component<Props> {
                             transitionLeave
                             transitionLeaveTimeout={ 300 }>
                             { estados
+                                .slice(-5)
                                 .reverse()
-                                .slice(0, 5)
                                 .map(({ id, fechaHora, valor }) => (
                                     <tr key={ id } style={ { width: '100%' } }>
                                         <td style={ style.Td }>
-                                            { moment(fechaHora).format('DD/MM/YYYY HH:mm') }
+                                            { this.formatDate(fechaHora) }
                                         </td>
                                         <td>
-                                            { valor } { unidad }{ ' ' }
+                                            { this.formatValue(valor) }{ ' ' }
                                             { valorMinimo !== undefined &&
                                                 valor !== undefined &&
                                                 Number.isInteger(valorMinimo) &&
@@ -140,6 +150,39 @@ class DetalleSensor extends Component<Props> {
                                     </tr>
                                 )) }
                         </ReactCSSTransitionGroup>
+                        <tbody>
+                            <tr>
+                                <td colSpan={ 2 }>
+                                    <AreaChart
+                                        width={ 350 }
+                                        height={ 180 }
+                                        data={ estados.slice(-100) }
+                                        syncId="anyId"
+                                        style={ { fontSize: '12px', lineHeight: '1' } }>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="fechaHora" tickFormatter={ this.formatHour } height={ 20 } />
+                                        <YAxis width={ 60 } tickFormatter={ this.formatValue } />
+                                        <Tooltip
+                                            contentStyle={ {
+                                                backgroundColor: 'rgb(255, 255, 255, 0.8)',
+                                                padding: '5px',
+                                            } }
+                                            labelStyle={ { fontSize: '12px', lineHeight: '1' } }
+                                            labelFormatter={ this.formatDate }
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="valor"
+                                            stroke="hsl(195, 100%, 33%)"
+                                            fill="hsl(195, 100%, 53%)"
+                                            name="Valor"
+                                        />
+                                        <ReferenceLine y={ valorMaximo } label="Maximo" stroke="red" strokeDasharray="3 3" />
+                                        <ReferenceLine y={ valorMinimo } label="Minimo" stroke="red" strokeDasharray="3 3" />
+                                    </AreaChart>
+                                </td>
+                            </tr>
+                        </tbody>
                     </Table>
                 </Card.Body>
             </Card>
