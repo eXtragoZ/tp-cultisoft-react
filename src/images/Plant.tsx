@@ -1,5 +1,8 @@
+import React, { Component } from 'react';
+import { ReactComponent as PlantSvg } from '../images/plant.svg';
+
 function drawMainStem() {
-    const paths = document.querySelectorAll('.main-stem');
+    const paths = document.querySelectorAll('.main-stem') as any;
 
     for (const path of paths) {
         const length = path.getTotalLength();
@@ -13,7 +16,7 @@ function drawMainStem() {
 }
 
 function drawStems() {
-    const paths = document.querySelectorAll('.outer-stems');
+    const paths = document.querySelectorAll('.outer-stems') as any;
     for (const path of paths) {
         const length = path.getTotalLength();
         path.style.transition = 'none';
@@ -26,7 +29,7 @@ function drawStems() {
 }
 
 function drawLeaves() {
-    const paths = document.querySelectorAll('.leaves path');
+    const paths = document.querySelectorAll('.leaves path') as any;
     for (const path of paths) {
         const length = path.getTotalLength();
         path.style.transition = 'none';
@@ -38,12 +41,22 @@ function drawLeaves() {
     }
 }
 
-
 function drawPlant() {
     drawMainStem();
     drawStems();
     drawLeaves();
 }
+class Plant extends Component<Props> {
+    componentDidMount() {
+        process.nextTick(drawPlant);
+    }
+    render() {
+        return <PlantSvg className={ this.props.className } />;
+    }
+}
 
-export default drawPlant;
+interface Props {
+    className: string;
+}
 
+export default Plant;

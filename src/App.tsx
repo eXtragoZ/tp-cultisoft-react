@@ -6,6 +6,7 @@ import Cultivos, { Cultivo } from './components/Cultivos';
 import Login from './components/Login';
 import Menu from './components/Menu';
 import Guias from './components/Guias';
+import Plant from './images/Plant';
 
 class App extends Component<{}, State> {
     state: State = {};
@@ -19,6 +20,9 @@ class App extends Component<{}, State> {
         return (
             <Router>
                 <div className='App'>
+                    <Route path='/cultivos'>
+                        <Plant className="backgroud-plant-cultivos" />
+                    </Route>
                     <Menu />
                     <Jumbotron fluid style={ { minHeight: 'calc(100vh - 56px)', margin: 0 } }>
                         <Switch>
