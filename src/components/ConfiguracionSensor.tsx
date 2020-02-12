@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { Button, FormControl, FormControlProps, InputGroup } from 'react-bootstrap';
+import { Button, FormControl, InputGroup } from 'react-bootstrap';
 import { MdCheck, MdClose, MdCreate, MdUndo } from 'react-icons/md';
 import { Sensor } from './Cultivos';
 
@@ -26,7 +26,7 @@ class ConfiguracionSensor extends Component<Props, State> {
         this.onChange(sensorModificado);
     };
 
-    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
+    handleChange = (
         event: React.FormEvent<HTMLInputElement>,
     ) => {
         if (!event.currentTarget.id) {

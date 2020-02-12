@@ -1,19 +1,12 @@
 import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
-import {
-    Button,
-    FormControl,
-    FormControlProps,
-    FormGroup,
-    FormLabel,
-    Modal,
-} from 'react-bootstrap';
+import { Button, FormControl, FormGroup, FormLabel, Modal } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
+import { Usuario } from '../App';
 import cultiFetch from '../CultiAPI';
 import ConfiguracionActuadores from './ConfiguracionActuadores';
 import ConfiguracionSensores from './ConfiguracionSensores';
 import { Actuador, Cultivo, Sensor } from './Cultivos';
-import { Usuario } from '../App';
 
 class ModificarCultivo extends Component<Props, State> {
     constructor(props: Props) {
@@ -252,7 +245,7 @@ class ModificarCultivo extends Component<Props, State> {
         }
     };
 
-    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
+    handleChange = (
         event: React.FormEvent<HTMLInputElement>,
     ) => {
         this.setState({ [event.currentTarget.id]: event.currentTarget.value } as any);

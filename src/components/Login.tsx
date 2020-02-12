@@ -1,8 +1,8 @@
 import React, { Component, ReactNode } from 'react';
-import { Button, Col, Form, FormControlProps, Modal } from 'react-bootstrap';
+import { Button, Col, Form, Modal } from 'react-bootstrap';
 import { PacmanLoader } from 'react-spinners';
-import cultiFetch from '../CultiAPI';
 import { Usuario } from '../App';
+import cultiFetch from '../CultiAPI';
 
 class Login extends Component<Props> {
     state = {
@@ -35,7 +35,7 @@ class Login extends Component<Props> {
         this.setState({ cargando: false });
     };
 
-    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (event: React.FormEvent<HTMLInputElement>) => {
+    handleChange = (event: React.FormEvent<HTMLInputElement>) => {
         this.setState({
             [event.currentTarget.id]: event.currentTarget.value,
             error: undefined,

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
-import { Button, Col, Form, FormControlProps, InputGroup, Modal } from 'react-bootstrap';
+import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
 import cultiFetch from '../CultiAPI';
@@ -113,7 +113,7 @@ class EjecutarComando extends Component<Props, State> {
         this.setState({ cargando: false });
     };
 
-    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
+    handleChange = (
         event: React.FormEvent<HTMLInputElement>,
     ) => {
         this.setState({ [event.currentTarget.id]: event.currentTarget.value } as any);

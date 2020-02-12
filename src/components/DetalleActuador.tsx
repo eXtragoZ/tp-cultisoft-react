@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Card, CardProps, Table } from 'react-bootstrap';
 import { MdClose, MdDoneAll, MdSchedule } from 'react-icons/md';
@@ -7,7 +7,7 @@ import { Actuador } from './Cultivos';
 import IndicadorEstado from './IndicadorEstado';
 
 class DetalleActuador extends Component<Props> {
-    render(): ReactNode {
+    render() {
         const {
             actuador: {
                 id,
@@ -23,7 +23,7 @@ class DetalleActuador extends Component<Props> {
         comandos.reverse();
         const ultimosComandos = comandos.slice(0, 5);
         const ultimoComandoTemporal = comandos.find((comando) => !!comando.desde);
-        if (moment(ultimoComandoTemporal.hasta).isAfter(moment())) {
+        if (ultimoComandoTemporal && moment(ultimoComandoTemporal.hasta).isAfter(moment())) {
             const indxComando = ultimosComandos.indexOf(ultimoComandoTemporal);
             if (indxComando !== -1) {
                 ultimosComandos.splice(indxComando, 1);

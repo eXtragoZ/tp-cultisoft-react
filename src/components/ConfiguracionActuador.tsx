@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { Button, FormControl, FormControlProps, InputGroup } from 'react-bootstrap';
+import { Button, FormControl, InputGroup } from 'react-bootstrap';
 import { MdCheck, MdClose, MdCreate, MdUndo } from 'react-icons/md';
 import { Actuador } from './Cultivos';
 import IndicadorEstado from './IndicadorEstado';
@@ -32,8 +32,8 @@ class ConfiguracionActuador extends Component<Props, State> {
         return descripcion === '';
     };
 
-    handleChange: React.FormEventHandler<FormControlProps | HTMLInputElement> = (
-        event: React.FormEvent<HTMLInputElement>,
+    handleChange = (
+        event: React.FormEvent<HTMLInputElement>
     ) => {
         if (!event.currentTarget.id) {
             return;
