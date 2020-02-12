@@ -4,7 +4,6 @@ import { PacmanLoader } from 'react-spinners';
 import { Usuario } from '../App';
 import cultiFetch from '../CultiAPI';
 import Plant from '../images/Plant';
-import drawPlant from '../images/drawPant';
 
 class Login extends Component<Props> {
     state = {
@@ -56,7 +55,7 @@ class Login extends Component<Props> {
         const { cargando, usuario, password, error } = this.state;
         return (
             <Modal show onHide={() => {}} centered>
-                <Plant className="backgroud-plant-login" />
+                <Plant className="backgroud-plant-login" delay />
 
                 <Modal.Header>
                     <Modal.Title id='contained-modal-title-vcenter'>Cultisoft login</Modal.Title>

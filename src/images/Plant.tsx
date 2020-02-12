@@ -10,7 +10,7 @@ function drawMainStem() {
         path.style.strokeDasharray = length + ' ' + length;
         path.style.strokeDashoffset = length;
         path.getBoundingClientRect();
-        path.style.transition = path.style.WebkitTransition = 'stroke-dashoffset 4s 0s ease-in-out';
+        path.style.transition = 'stroke-dashoffset 4s 0s ease-in-out';
         path.style.strokeDashoffset = '0';
     }
 }
@@ -23,7 +23,7 @@ function drawStems() {
         path.style.strokeDasharray = length + ' ' + length;
         path.style.strokeDashoffset = length;
         path.getBoundingClientRect();
-        path.style.transition = path.style.WebkitTransition = 'stroke-dashoffset 3s 1s ease-in-out';
+        path.style.transition = 'stroke-dashoffset 3s 1s ease-in-out';
         path.style.strokeDashoffset = '0';
     }
 }
@@ -36,7 +36,7 @@ function drawLeaves() {
         path.style.strokeDasharray = length + ' ' + length;
         path.style.strokeDashoffset = length;
         path.getBoundingClientRect();
-        path.style.transition = path.style.WebkitTransition = 'stroke-dashoffset 4s 2.5s ease-in-out';
+        path.style.transition = 'stroke-dashoffset 4s 2.5s ease-in-out';
         path.style.strokeDashoffset = '0';
     }
 }
@@ -48,7 +48,11 @@ function drawPlant() {
 }
 class Plant extends Component<Props> {
     componentDidMount() {
-        process.nextTick(drawPlant);
+        if (this.props.delay) {
+            process.nextTick(drawPlant);
+        } else {
+            drawPlant();
+        }
     }
     render() {
         return <PlantSvg className={ this.props.className } />;
@@ -57,6 +61,7 @@ class Plant extends Component<Props> {
 
 interface Props {
     className: string;
+    delay?: boolean;
 }
 
 export default Plant;

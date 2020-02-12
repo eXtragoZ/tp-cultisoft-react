@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Menu from './components/Menu';
 import Guias from './components/Guias';
 import Plant from './images/Plant';
+import Plant2 from './images/Plant2';
 
 class App extends Component<{}, State> {
     state: State = {};
@@ -22,6 +23,7 @@ class App extends Component<{}, State> {
                 <div className='App'>
                     <Route path='/cultivos'>
                         <Plant className="backgroud-plant-cultivos" />
+                        <Plant2 className="backgroud-plant2-cultivos"/>
                     </Route>
                     <Menu />
                     <Jumbotron fluid style={ { minHeight: 'calc(100vh - 56px)', margin: 0 } }>

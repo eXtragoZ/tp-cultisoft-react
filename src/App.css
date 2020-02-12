@@ -103,12 +103,24 @@
   bottom: 0;
   right: 10px;
   stroke: green;
-  opacity: 0.5;
+  opacity: 0.4;
   pointer-events: none;
   width: 120px;
   height: 100px;
 }
 
+.backgroud-plant2-cultivos {
+  position: fixed;
+  bottom: 0;
+  left: 10px;
+  opacity: 0.03;
+  pointer-events: none;
+  animation: decay 10s ease-in-out 1s;
+}
+@keyframes decay {
+  0% { opacity: 0.2; }
+  100% { opacity: 0.03; }
+}
 
 .modal-body .form-control, .modal-body .form-control:focus {
   background-color: rgba(255, 255, 255, 0.8);
