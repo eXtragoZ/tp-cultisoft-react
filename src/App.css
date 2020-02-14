@@ -1,5 +1,6 @@
 .modal-xl {
-  max-width: calc(100% - 1rem);
+  max-width: unset;
+  justify-content: center;
 }
 
 .modal-xl .container {
@@ -15,8 +16,22 @@
 .modal-xl .container .row {
   justify-content: center;
   width: 100%;
-
+  flex-wrap: nowrap;
+  padding: 0 1.5rem;
 }
+
+.detalle-cultivo .modal-content {
+  width: unset;
+}
+.detalle-cultivo .col {
+  padding-right: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.detalle-cultivo .card {
+  margin: 1rem 0;
+}
+
 
 
 .list-item-appear {

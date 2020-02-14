@@ -4,12 +4,11 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
 import { Usuario } from '../App';
 import cultiFetch from '../CultiAPI';
-import ConfiguracionActuadores from './ConfiguracionActuadores';
-import ConfiguracionSensores from './ConfiguracionSensores';
-import { Actuador, Cultivo, Sensor } from './Cultivos';
+import { Actuador, Sensor } from './Cultivos';
+import { Guia } from './Guias';
 
-class ModificarCultivo extends Component<Props, State> {
-    constructor(props: Props) {
+class ModificarGuia extends Component<Props, State> {
+    constructor (props: Props) {
         super(props);
         this.state = {
             abierto: false,
@@ -22,13 +21,8 @@ class ModificarCultivo extends Component<Props, State> {
     }
 
     abrir: MouseEventHandler = () => {
-        const {
-            nombre = '',
-            descripcion = '',
-            sensores = [],
-            actuadores = [],
-        } = this.props.cultivo;
-        this.setState({ abierto: true, nombre, descripcion, sensores, actuadores });
+        const { nombre = '', descripcion = '' } = this.props.guia;
+        this.setState({ abierto: true, nombre, descripcion });
     };
 
     cerrar = () => {
@@ -40,8 +34,8 @@ class ModificarCultivo extends Component<Props, State> {
     };
 
     terminar = () => {
-        const { actualizarCultivos } = this.props;
-        this.setState({ listo: false }, actualizarCultivos);
+        const { actualizarGuias } = this.props;
+        this.setState({ listo: false }, actualizarGuias);
     };
 
     cerrarTerminar = () => {
@@ -54,7 +48,7 @@ class ModificarCultivo extends Component<Props, State> {
 
     enviar = async () => {
         const {
-            cultivo: { id },
+            guia: { id },
         } = this.props;
         if (id != null) {
             this.modificarCultivo();
@@ -64,20 +58,16 @@ class ModificarCultivo extends Component<Props, State> {
     };
     modificarCultivo = async () => {
         const {
-            cultivo: { id },
+            guia: { id },
         } = this.props;
         const { nombre, descripcion } = this.state;
-        const sensores = this.sensoresAEnviar();
-        const actuadores = this.actuadoresAEnviar();
         this.setState({ cargando: true });
         try {
             // const json =
             await cultiFetch('cultivo/modificarCultivo/', {
                 id,
                 nombre,
-                descripcion,
-                sensores,
-                actuadores,
+                descripcion
             });
             this.setState({ abierto: false, listo: true, cargando: false });
         } catch (error) {
@@ -91,10 +81,8 @@ class ModificarCultivo extends Component<Props, State> {
     };
 
     nuevoCultivo = async () => {
-        const { usuario, actualizarCultivos } = this.props;
+        const { usuario, actualizarGuias } = this.props;
         const { nombre, descripcion } = this.state;
-        const sensores = this.sensoresAEnviar();
-        const actuadores = this.actuadoresAEnviar();
         this.setState({ cargando: true });
 
         try {
@@ -102,13 +90,11 @@ class ModificarCultivo extends Component<Props, State> {
             await cultiFetch('cultivo/insertCultivo/', {
                 id_usuario: usuario.id,
                 nombre,
-                descripcion,
-                sensores,
-                actuadores,
+                descripcion
             });
             this.setState(
                 { abierto: false, listo: true, cargando: false },
-                actualizarCultivos,
+                actualizarGuias,
             );
         } catch (error) {
             if (error.message === 'Failed to fetch') {
@@ -118,30 +104,6 @@ class ModificarCultivo extends Component<Props, State> {
             }
         }
         this.setState({ cargando: false });
-    };
-
-    sensoresAEnviar = () => {
-        const { sensores = [] } = this.state;
-        const sensoresAgregados = sensores.filter(
-            (sensor) => !sensor.id && !sensor.eliminado,
-        );
-        const sensoresModificados = sensores.filter(
-            (sensor) => sensor.id && this.esModificado(sensor, this.sensorPorId(sensor.id)),
-        );
-        return [...sensoresAgregados, ...sensoresModificados];
-    };
-
-    actuadoresAEnviar = () => {
-        const { actuadores = [] } = this.state;
-        const actuadoresAgregados = actuadores.filter(
-            (actuador) => !actuador.id && !actuador.eliminado,
-        );
-        const actuadoresModificados = actuadores.filter(
-            (actuador) =>
-                actuador.id &&
-                this.esModificado(actuador, this.actuadorPorId(actuador.id)),
-        );
-        return [...actuadoresAgregados, ...actuadoresModificados];
     };
 
     guardarDeshabilitado() {
@@ -165,34 +127,12 @@ class ModificarCultivo extends Component<Props, State> {
     }
 
     hayModificaciones() {
-        const { cultivo } = this.props;
+        const { guia } = this.props;
         const { nombre, descripcion, sensores = [], actuadores = [] } = this.state;
-        if ((cultivo.nombre || '') !== nombre) {
+        if ((guia.nombre || '') !== nombre) {
             return true;
         }
-        if ((cultivo.descripcion || '') !== descripcion) {
-            return true;
-        }
-        const sensoresAgregados = sensores.some(
-            (sensor) => !sensor.id && !sensor.eliminado,
-        );
-        const sensoresModificados = sensores.some(
-            (sensor) => sensor.id && this.esModificado(sensor, this.sensorPorId(sensor.id)),
-        );
-        const actuadoresAgregados = actuadores.some(
-            (actuador) => !actuador.id && !actuador.eliminado,
-        );
-        const actuadoresModificados = actuadores.some(
-            (actuador) =>
-                actuador.id &&
-                this.esModificado(actuador, this.actuadorPorId(actuador.id)),
-        );
-        if (
-            sensoresAgregados ||
-            sensoresModificados ||
-            actuadoresAgregados ||
-            actuadoresModificados
-        ) {
+        if ((guia.descripcion || '') !== descripcion) {
             return true;
         }
         return false;
@@ -202,11 +142,11 @@ class ModificarCultivo extends Component<Props, State> {
         if (objeto1 === objeto2) {
             return false;
         }
-        return [...Object.keys(objeto1), ...Object.keys(objeto2)].some(
+        return [ ...Object.keys(objeto1), ...Object.keys(objeto2) ].some(
             (key) =>
-                objeto1[key] !== objeto2[key] &&
-                !(objeto1[key] === '' && !objeto2[key]) &&
-                !(objeto2[key] === '' && !objeto1[key]),
+                objeto1[ key ] !== objeto2[ key ] &&
+                !(objeto1[ key ] === '' && !objeto2[ key ]) &&
+                !(objeto2[ key ] === '' && !objeto1[ key ]),
         );
     };
 
@@ -231,24 +171,11 @@ class ModificarCultivo extends Component<Props, State> {
         return false;
     };
 
-    sensorPorId = (id: number) => {
-        const { cultivo } = this.props;
-        if (cultivo.sensores) {
-            return cultivo.sensores.find((sensor) => sensor.id === id);
-        }
-    };
-
-    actuadorPorId = (id: number) => {
-        const { cultivo } = this.props;
-        if (cultivo.actuadores) {
-            return cultivo.actuadores.find((actuador) => actuador.id === id);
-        }
-    };
 
     handleChange = (
         event: React.FormEvent<HTMLInputElement>,
     ) => {
-        this.setState({ [event.currentTarget.id]: event.currentTarget.value } as any);
+        this.setState({ [ event.currentTarget.id ]: event.currentTarget.value } as any);
     };
 
     handleChangeSensores = (sensores: Sensor[]) => {
@@ -260,10 +187,7 @@ class ModificarCultivo extends Component<Props, State> {
     };
 
     render() {
-        const {
-            children,
-            cultivo: { actuadores, sensores },
-        } = this.props;
+        const { children, guia } = this.props;
         const { descripcion, nombre, abierto, error } = this.state;
         return (
             <Fragment>
@@ -297,14 +221,6 @@ class ModificarCultivo extends Component<Props, State> {
                                 isInvalid={ !descripcion.length }
                             />
                         </FormGroup>
-                        <ConfiguracionSensores
-                            sensores={ sensores }
-                            onChange={ this.handleChangeSensores }
-                        />
-                        <ConfiguracionActuadores
-                            actuadores={ actuadores }
-                            onChange={ this.handleChangeActuadores }
-                        />
                     </Modal.Body>
                     <Modal.Footer>
                         { error && <div style={ { color: 'red' } }>{ error }</div> }
@@ -321,8 +237,8 @@ class ModificarCultivo extends Component<Props, State> {
                                     css={ 'margin: 2px 40px 12px 0px;' }
                                 />
                             ) : (
-                                'Guardar'
-                            ) }
+                                    'Guardar'
+                                ) }
                         </Button>
                     </Modal.Footer>
                 </Modal>
@@ -352,9 +268,9 @@ class ModificarCultivo extends Component<Props, State> {
 
 interface Props {
     children: ReactNode;
-    cultivo: Cultivo;
+    guia: Guia;
     usuario: Usuario;
-    actualizarCultivos: () => void;
+    actualizarGuias: () => void;
 }
 
 interface State {
@@ -369,4 +285,4 @@ interface State {
     error?: string;
 }
 
-export default ModificarCultivo;
+export default ModificarGuia;

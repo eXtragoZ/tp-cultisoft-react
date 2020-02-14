@@ -36,7 +36,7 @@ function drawLeaves() {
         path.style.strokeDasharray = length + ' ' + length;
         path.style.strokeDashoffset = length;
         path.getBoundingClientRect();
-        path.style.transition = 'stroke-dashoffset 4s 2.5s ease-in-out';
+        path.style.transition = 'stroke-dashoffset 4s 2.8s ease-in-out';
         path.style.strokeDashoffset = '0';
     }
 }

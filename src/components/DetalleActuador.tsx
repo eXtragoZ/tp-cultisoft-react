@@ -134,7 +134,7 @@ interface Props extends CardProps {
 }
 
 const style = {
-    Card: { minWidth: '20rem', maxWidth: '25rem', margin: '0.5rem', fontSize: 'small' },
+    Card: { width: '25rem', fontSize: 'small' },
     Header: { padding: '.35rem 1.25rem' },
     Body: { padding: 0 },
     Td: { paddingLeft: '1.5rem' },

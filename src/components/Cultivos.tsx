@@ -75,7 +75,7 @@ class Cultivos extends Component<Props> {
                                 <td />
                                 <td>
                                     <ModificarCultivo
-                                        cultivo={ (() => ({ nombre: 'Nuevo Cultivo' }))() }
+                                        cultivo={ { nombre: 'Nuevo Cultivo' } }
                                         usuario={ usuario }
                                         actualizarCultivos={ this.obtenerCultivos }>
                                         <MdAdd size={ 24 } />

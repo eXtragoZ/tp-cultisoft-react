@@ -1,9 +1,9 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 class Menu extends Component<Props> {
-    render(): ReactNode {
+    render() {
         return (
             <Navbar bg="primary" expand="lg">
                 <NavLink className="navbar-brand" to="/">CultiSoft</NavLink>

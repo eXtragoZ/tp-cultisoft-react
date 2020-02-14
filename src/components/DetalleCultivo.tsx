@@ -1,4 +1,3 @@
-import deepEqual from 'deep-equal';
 import React, { PureComponent } from 'react';
 import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
 import cultiFetch from '../CultiAPI';
@@ -51,7 +50,7 @@ class DetalleCultivo extends PureComponent<Props, State> {
             error,
         } = this.state;
         return (
-            <Modal show={ abierto } onHide={ cerrar } centered size="xl">
+            <Modal className="detalle-cultivo" show={ abierto } onHide={ cerrar } centered size="xl">
                 <Modal.Header closeButton>
                     <Modal.Title
                         id="contained-modal-title-vcenter"
