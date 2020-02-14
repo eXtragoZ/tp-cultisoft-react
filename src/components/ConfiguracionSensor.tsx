@@ -2,9 +2,9 @@ import React, { Component, ReactNode } from 'react';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
 import { MdCheck, MdClose, MdCreate, MdUndo } from 'react-icons/md';
 import { Sensor } from './Cultivos';
+import { unidades } from '../App';
 
 class ConfiguracionSensor extends Component<Props, State> {
-    unidades = { Humedad: '%', Temperatura: '°C', Luz: 'lx' };
     constructor(props: Props) {
         super(props);
 
@@ -89,7 +89,7 @@ class ConfiguracionSensor extends Component<Props, State> {
             },
             edicion,
         } = this.state;
-        const unidad = tipo ? this.unidades[tipo] : '';
+        const unidad = tipo ? unidades[tipo] : '';
         return (
             <tr key={ id } style={ eliminado ? { background: 'grey' } : {} }>
                 <td>{ id }</td>
@@ -115,7 +115,7 @@ class ConfiguracionSensor extends Component<Props, State> {
                             id="tipo"
                             onChange={ this.handleChange }>
                             <option key="none" />
-                            { Object.keys(this.unidades).map((tipoVariable) => (
+                            { Object.keys(unidades).map((tipoVariable) => (
                                 <option key={ tipoVariable }>{ tipoVariable }</option>
                             )) }
                         </FormControl>

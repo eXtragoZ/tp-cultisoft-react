@@ -5,7 +5,6 @@ import ConfiguracionActuador from './ConfiguracionActuador';
 import { Actuador } from './Cultivos';
 
 class ConfiguracionActuadores extends Component<Props, State> {
-    unidades = { Humedad: '%', Temperatura: '°C', Luz: 'hs' };
 
     constructor(props: Props) {
         super(props);

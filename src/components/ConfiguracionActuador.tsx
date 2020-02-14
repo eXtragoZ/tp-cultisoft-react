@@ -3,9 +3,9 @@ import { Button, FormControl, InputGroup } from 'react-bootstrap';
 import { MdCheck, MdClose, MdCreate, MdUndo } from 'react-icons/md';
 import { Actuador } from './Cultivos';
 import IndicadorEstado from './IndicadorEstado';
+import { unidades } from '../App';
 
 class ConfiguracionActuador extends Component<Props, State> {
-    unidades = { Humedad: '%', Temperatura: '°C', Luz: 'lx' };
     constructor(props: Props) {
         super(props);
 
@@ -96,7 +96,7 @@ class ConfiguracionActuador extends Component<Props, State> {
                             id="tipo"
                             onChange={ this.handleChange }>
                             <option key="none" />
-                            { Object.keys(this.unidades).map((tipoVariable) => (
+                            { Object.keys(unidades).map((tipoVariable) => (
                                 <option key={ tipoVariable }>{ tipoVariable }</option>
                             )) }
                         </FormControl>

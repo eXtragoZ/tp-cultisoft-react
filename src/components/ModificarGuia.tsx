@@ -1,11 +1,12 @@
 import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
-import { Button, FormControl, FormGroup, FormLabel, Modal } from 'react-bootstrap';
+import { Button, FormControl, FormGroup, FormLabel, Modal, InputGroup } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
-import { Usuario } from '../App';
+import { Usuario, unidades } from '../App';
 import cultiFetch from '../CultiAPI';
 import { Actuador, Sensor } from './Cultivos';
 import { Guia } from './Guias';
+import { Card, CardProps, Table } from 'react-bootstrap';
 
 class ModificarGuia extends Component<Props, State> {
     constructor (props: Props) {
@@ -189,17 +190,20 @@ class ModificarGuia extends Component<Props, State> {
     render() {
         const { children, guia } = this.props;
         const { descripcion, nombre, abierto, error } = this.state;
+
+        const valorMinimo = 0;
+        const valorMaximo = 0;
         return (
             <Fragment>
                 <Button variant="outline-dark" onClick={ this.abrir }>
                     { children }
                 </Button>
-                <Modal show={ abierto } onHide={ this.cerrar } centered size="xl">
+                <Modal className="modificar-guia" show={ abierto } onHide={ this.cerrar } centered size="xl">
                     <Modal.Header closeButton>
                         <Modal.Title
                             id="contained-modal-title-vcenter"
                             style={ { display: 'flex', width: '100%' } }>
-                            <span style={ { whiteSpace: 'nowrap' } }>Configuración de</span>
+                            <span style={ { whiteSpace: 'nowrap' } }>Edición de</span>
                             <FormControl
                                 style={ { flexGrow: 1, margin: ' 0 .75rem 0 .75rem' } }
                                 value={ nombre }
@@ -210,17 +214,160 @@ class ModificarGuia extends Component<Props, State> {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <FormGroup>
-                            <FormLabel>Descripción:</FormLabel>
-                            <FormControl
-                                value={ descripcion }
-                                id="descripcion"
-                                onChange={ this.handleChange }
-                                as="textarea"
-                                rows="2"
-                                isInvalid={ !descripcion.length }
-                            />
-                        </FormGroup>
+                        <div>
+                            <FormGroup>
+                                <FormLabel>Tipo de cultivo</FormLabel>
+                                <FormControl
+                                    value={ descripcion }
+                                    id="descripcion"
+                                    onChange={ this.handleChange }
+                                    isInvalid={ !descripcion.length }
+                                />
+                            </FormGroup>
+                            <FormGroup className="form-descripcion">
+                                <FormLabel>Descripción</FormLabel>
+                                <FormControl
+                                    value={ descripcion }
+                                    id="descripcion"
+                                    onChange={ this.handleChange }
+                                    as="textarea"
+                                    rows="2"
+                                    isInvalid={ !descripcion.length }
+                                />
+                            </FormGroup>
+                        </div>
+                        <div>
+                            Valores recomendados
+                            <Card>
+                                <Card.Header as="h6">
+                                    Humedad
+                                </Card.Header>
+                                <Card.Body>
+                                    <Table responsive size="sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>Valor Mínimo</th>
+                                                <td>
+                                                    <InputGroup size="sm">
+                                                        <FormControl
+                                                            type="number"
+                                                            value={ String(valorMinimo) }
+                                                            id="valorMinimo"
+                                                            onChange={ this.handleChange }
+                                                        />
+                                                        <InputGroup.Append>
+                                                            <InputGroup.Text>{ unidades.Humedad }</InputGroup.Text>
+                                                        </InputGroup.Append>
+                                                    </InputGroup>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Valor Máximo</th>
+                                                <td>
+                                                    <InputGroup size="sm">
+                                                        <FormControl
+                                                            type="number"
+                                                            value={ String(valorMaximo) }
+                                                            id="valorMaximo"
+                                                            onChange={ this.handleChange }
+                                                        />
+                                                        <InputGroup.Append>
+                                                            <InputGroup.Text>{ unidades.Humedad }</InputGroup.Text>
+                                                        </InputGroup.Append>
+                                                    </InputGroup>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                                </Card.Body>
+                            </Card>
+                            <Card>
+                                <Card.Header as="h6">
+                                    Temperatura
+                                </Card.Header>
+                                <Card.Body>
+                                    <Table responsive size="sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>Valor Mínimo</th>
+                                                <td>
+                                                    <InputGroup size="sm">
+                                                        <FormControl
+                                                            type="number"
+                                                            value={ String(valorMinimo) }
+                                                            id="valorMinimo"
+                                                            onChange={ this.handleChange }
+                                                        />
+                                                        <InputGroup.Append>
+                                                            <InputGroup.Text>{ unidades.Temperatura }</InputGroup.Text>
+                                                        </InputGroup.Append>
+                                                    </InputGroup>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Valor Máximo</th>
+                                                <td>
+                                                    <InputGroup size="sm">
+                                                        <FormControl
+                                                            type="number"
+                                                            value={ String(valorMaximo) }
+                                                            id="valorMaximo"
+                                                            onChange={ this.handleChange }
+                                                        />
+                                                        <InputGroup.Append>
+                                                            <InputGroup.Text>{ unidades.Temperatura }</InputGroup.Text>
+                                                        </InputGroup.Append>
+                                                    </InputGroup>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                                </Card.Body>
+                            </Card>
+                            <Card>
+                                <Card.Header as="h6">
+                                    Luz
+                                </Card.Header>
+                                <Card.Body>
+                                    <Table responsive size="sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>Valor Mínimo</th>
+                                                <td>
+                                                    <InputGroup size="sm">
+                                                        <FormControl
+                                                            type="number"
+                                                            value={ String(valorMinimo) }
+                                                            id="valorMinimo"
+                                                            onChange={ this.handleChange }
+                                                        />
+                                                        <InputGroup.Append>
+                                                            <InputGroup.Text>{ unidades.Luz }</InputGroup.Text>
+                                                        </InputGroup.Append>
+                                                    </InputGroup>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Valor Máximo</th>
+                                                <td>
+                                                    <InputGroup size="sm">
+                                                        <FormControl
+                                                            type="number"
+                                                            value={ String(valorMaximo) }
+                                                            id="valorMaximo"
+                                                            onChange={ this.handleChange }
+                                                        />
+                                                        <InputGroup.Append>
+                                                            <InputGroup.Text>{ unidades.Luz }</InputGroup.Text>
+                                                        </InputGroup.Append>
+                                                    </InputGroup>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                                </Card.Body>
+                            </Card>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         { error && <div style={ { color: 'red' } }>{ error }</div> }

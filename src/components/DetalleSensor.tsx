@@ -7,15 +7,15 @@ import { MdReportProblem } from 'react-icons/md';
 import { Sensor } from './Cultivos';
 import IndicadorEstado from './IndicadorEstado';
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ReferenceLine } from 'recharts';
+import { unidades } from '../App';
 
 class DetalleSensor extends PureComponent<Props> {
-    unidades = { Humedad: '%', Temperatura: '°C', Luz: 'lx' };
     formatDate = (fechaHora: string | number) => moment(fechaHora).format('DD/MM/YYYY HH:mm');
 
     formatHour = (fechaHora: string | number) => moment(fechaHora).format('HH:mm');
     formatValue = (value: string | number) => {
         const { tipo } = this.props.sensor;
-        const unidad = tipo ? this.unidades[ tipo ] : '';
+        const unidad = tipo ? unidades[ tipo ] : '';
         return `${ value } ${ unidad }`;
     };
 
@@ -47,29 +47,29 @@ class DetalleSensor extends PureComponent<Props> {
         const fueraDeRango = mayorAlRango || menorAlRango;
 
         return (
-            <Card style={ style.Card } border={ fueraDeRango ? 'danger' : undefined }>
-                <Card.Header as="h6" style={ style.Header }>
+            <Card border={ fueraDeRango ? 'danger' : undefined }>
+                <Card.Header as="h6">
                     { 'Sensor ' } { id }
                     { descripcion && ' - ' + descripcion }
                 </Card.Header>
-                <Card.Body style={ style.Body }>
+                <Card.Body>
                     <Table responsive size="sm">
                         <tbody>
                             <tr>
-                                <td style={ style.Td }>Codigo</td>
+                                <td className="td-lable">Codigo</td>
                                 <td>{ id }</td>
                             </tr>
                             <tr>
-                                <td style={ style.Td }>Descripcion</td>
+                                <td className="td-lable">Descripcion</td>
                                 <td>{ descripcion || '-' }</td>
                             </tr>
                             <tr>
-                                <td style={ style.Td }>Tipo</td>
+                                <td className="td-lable">Tipo</td>
                                 <td>{ tipo || '-' }</td>
                             </tr>
                             { estado && (
                                 <tr>
-                                    <td style={ style.Td }>Estado</td>
+                                    <td className="td-lable">Estado</td>
                                     <td>
                                         <IndicadorEstado estado={ estado } />
                                     </td>
@@ -78,7 +78,7 @@ class DetalleSensor extends PureComponent<Props> {
 
                             { valorMinimo && (
                                 <tr>
-                                    <td style={ style.Td }>Valor minimo</td>
+                                    <td className="td-lable">Valor minimo</td>
                                     <td>
                                         { this.formatValue(valorMinimo) }
                                     </td>
@@ -87,14 +87,14 @@ class DetalleSensor extends PureComponent<Props> {
 
                             { valorMaximo && (
                                 <tr>
-                                    <td style={ style.Td }>Valor maximo</td>
+                                    <td className="td-lable">Valor maximo</td>
                                     <td>
                                         { this.formatValue(valorMaximo) }
                                     </td>
                                 </tr>
                             ) }
                             <tr>
-                                <td style={ style.Subtitulo } colSpan={ 2 }>
+                                <td className="td-subtitulo" colSpan={ 2 }>
                                     Valores censados
                                 </td>
                             </tr>
@@ -113,7 +113,7 @@ class DetalleSensor extends PureComponent<Props> {
                                 .reverse()
                                 .map(({ id, fechaHora, valor }) => (
                                     <tr key={ id } style={ { width: '100%' } }>
-                                        <td style={ style.Td }>
+                                        <td className="td-lable">
                                             { this.formatDate(fechaHora) }
                                         </td>
                                         <td>
@@ -193,13 +193,5 @@ class DetalleSensor extends PureComponent<Props> {
 interface Props extends CardProps {
     sensor: Sensor;
 }
-
-const style = {
-    Card: { width: '25rem', fontSize: 'small' },
-    Header: { padding: '.35rem 1.25rem' },
-    Body: { padding: 0 },
-    Td: { paddingLeft: '1.5rem' },
-    Subtitulo: { backgroundColor: 'rgba(0,0,0,.03)', textAlign: 'center' } as any,
-};
 
 export default DetalleSensor;

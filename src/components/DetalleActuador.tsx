@@ -35,43 +35,42 @@ class DetalleActuador extends PureComponent<Props> {
 
         return (
             <Card
-                style={ style.Card }
                 border={
                     estado === 'Encendido' || estado === true ? 'success' : undefined
                 }>
-                <Card.Header as="h6" style={ style.Header }>
+                <Card.Header as="h6">
                     { 'Actuador ' } { id }
                     { descripcion && ' - ' + descripcion }
                 </Card.Header>
-                <Card.Body style={ style.Body }>
+                <Card.Body>
                     <Table responsive size="sm">
                         <tbody>
                             <tr>
-                                <td style={ style.Td }>Codigo</td>
+                                <td className="td-lable">Codigo</td>
                                 <td>{ id }</td>
                             </tr>
                             <tr>
-                                <td style={ style.Td }>Descripcion</td>
+                                <td className="td-lable">Descripcion</td>
                                 <td>{ descripcion || '-' }</td>
                             </tr>
                             <tr>
-                                <td style={ style.Td }>Tipo</td>
+                                <td className="td-lable">Tipo</td>
                                 <td>{ tipo || '-' }</td>
                             </tr>
                             <tr>
-                                <td style={ style.Td }>Estado</td>
+                                <td className="td-lable">Estado</td>
                                 <td>
                                     <IndicadorEstado estado={ estado } />
                                 </td>
                             </tr>
                             { activarDesde && (
                                 <tr>
-                                    <td style={ style.Td }>Activación</td>
+                                    <td className="td-lable">Activación</td>
                                     <td>{ activarDesde + '-' + activarHasta }</td>
                                 </tr>
                             ) }
                             <tr>
-                                <td style={ style.Subtitulo } colSpan={ 2 }>
+                                <td className="td-subtitulo" colSpan={ 2 }>
                                     Comandos
                                 </td>
                             </tr>
@@ -98,7 +97,7 @@ class DetalleActuador extends PureComponent<Props> {
                                     index,
                                 ) => (
                                     <tr key={ idComando }>
-                                        <td style={ style.Td }>
+                                        <td className="td-lable">
                                             { moment(desde || fechaHora).format(
                                                 'DD/MM/YYYY HH:mm',
                                             ) }
@@ -132,13 +131,5 @@ class DetalleActuador extends PureComponent<Props> {
 interface Props extends CardProps {
     actuador: Actuador;
 }
-
-const style = {
-    Card: { width: '25rem', fontSize: 'small' },
-    Header: { padding: '.35rem 1.25rem' },
-    Body: { padding: 0 },
-    Td: { paddingLeft: '1.5rem' },
-    Subtitulo: { backgroundColor: 'rgba(0,0,0,.03)', textAlign: 'center' } as any,
-};
 
 export default DetalleActuador;

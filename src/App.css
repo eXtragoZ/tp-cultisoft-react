@@ -28,19 +28,13 @@
   padding-left: 1.5rem;
 }
 
-.detalle-cultivo .card {
-  margin: 1rem 0;
-}
-
-
-
 .list-item-appear {
   opacity: 0.01;
 }
 
 .list-item-appear.list-item-appear-active {
   opacity: 1;
-  transition: opacity .5s ease-in;
+  transition: opacity 0.5s ease-in;
 }
 
 .list-item-enter {
@@ -51,7 +45,7 @@
 .list-item-enter.list-item-enter-active {
   opacity: 1;
   transition: opacity 500ms ease-out, transform 500ms ease-out;
-  transform:translate(0,0);
+  transform: translate(0, 0);
 }
 
 .list-item-leave {
@@ -61,13 +55,13 @@
 .list-item-leave.list-item-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in, transform 300ms ease-in;
-  transform:translate(0, 0em) scale(0,0);
+  transform: translate(0, 0em) scale(0, 0);
 }
 
 .jumbotron {
   padding: 2rem 3rem;
 }
-.jumbotron >h2 {
+.jumbotron > h2 {
   text-align: center;
   color: #47b368;
 }
@@ -85,7 +79,8 @@
   color: #55754f;
 }
 
-.table th, .table td { 
+.table th,
+.table td {
   border-top: 1px solid rgba(70, 214, 44, 0.1);
 }
 
@@ -96,7 +91,8 @@
   color: #343a40;
 }
 
-.btn-secondary, .badge-danger {
+.btn-secondary,
+.badge-danger {
   background-color: #f56167;
 }
 
@@ -133,14 +129,74 @@
   animation: decay 10s ease-in-out 1s;
 }
 @keyframes decay {
-  0% { opacity: 0.2; }
-  100% { opacity: 0.03; }
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.03;
+  }
 }
 
-.modal-body .form-control, .modal-body .form-control:focus {
+.modal-body .form-control,
+.modal-body .form-control:focus {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
 input:-webkit-autofill {
   opacity: 0.8;
+}
+
+.modificar-guia .modal-body {
+  display: flex;
+  width: 100%;
+}
+.modificar-guia .modal-body > div {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.detalle-cultivo .card,
+.modificar-guia .card {
+  width: 25rem;
+  font-size: small;
+  margin: 1rem 0;
+}
+
+.detalle-cultivo .card .card-header,
+.modificar-guia .card .card-header {
+  padding: 0.35rem 1.25rem;
+}
+.detalle-cultivo .card .card-body,
+.modificar-guia .card .card-body {
+  padding: 0;
+}
+
+.detalle-cultivo .td-lable {
+  padding-left: 1.5rem;
+}
+
+.detalle-cultivo .td-subtitulo {
+  background-color: rgba(0, 0, 0, 0.03);
+  text-align: center;
+}
+
+.modificar-guia .table {
+  margin: 0;
+}
+
+.modificar-guia .table th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.modificar-guia .form-descripcion {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.modificar-guia .form-descripcion #descripcion {
+  display: flex;
+  flex-grow: 1;
 }

@@ -23,7 +23,7 @@ class App extends Component<{}, State> {
                 <div className='App'>
                     <Route path='/cultivos'>
                         <Plant className="backgroud-plant-cultivos" />
-                        <Plant2 className="backgroud-plant2-cultivos"/>
+                        <Plant2 className="backgroud-plant2-cultivos" />
                     </Route>
                     <Menu />
                     <Jumbotron fluid style={ { minHeight: 'calc(100vh - 56px)', margin: 0 } }>
@@ -55,5 +55,7 @@ export interface Usuario {
     id: number;
     cultivos: Cultivo[];
 }
+
+export const unidades = { Humedad: '%', Temperatura: '°C', Luz: 'lx' };
 
 export default App;
