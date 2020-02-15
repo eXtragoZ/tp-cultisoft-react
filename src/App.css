@@ -200,3 +200,19 @@ input:-webkit-autofill {
   display: flex;
   flex-grow: 1;
 }
+
+.filtros-guias {
+  display: flex;
+}
+
+.filtros-guias .form-group {
+  padding: 0 1rem;
+}
+
+.estrella-calificacion {
+  color: gold;
+  font-size: 24px;
+}
+.estrellas {
+  display: inline-flex;
+}

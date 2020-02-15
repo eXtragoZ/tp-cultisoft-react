@@ -7,8 +7,8 @@ import cultiFetch from '../CultiAPI';
 import CultivoRow from './CultivoRow';
 import ModificarCultivo from './ModificarCultivo';
 
-class Cultivos extends Component<Props> {
-    state: { cultivos: Cultivo[]; cargando: boolean; error?: string } = {
+class Cultivos extends Component<Props, State> {
+    state: State = {
         cultivos: [],
         cargando: false,
     };
@@ -92,6 +92,12 @@ class Cultivos extends Component<Props> {
 
 interface Props {
     usuario: Usuario;
+}
+
+interface State {
+    cultivos: Cultivo[];
+    cargando: boolean;
+    error?: string;
 }
 
 export interface Cultivo {
