@@ -75,8 +75,15 @@ interface Props {
 export interface Guia {
     id?: number;
     nombre?: string;
+    tipo?: string;
     descripcion?: string;
     autor?: string;
+    humedadMinima?: number;
+    humedadMaxima?: number;
+    temperaturaMinima?: number;
+    temperaturaMaxima?: number;
+    luzDesde?: string;
+    luzHasta?: string;
     comentarios?: string[];
     calificacion?: number;
 }

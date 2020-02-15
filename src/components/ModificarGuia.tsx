@@ -1,12 +1,12 @@
-import React, { Component, Fragment, MouseEventHandler, ReactNode } from 'react';
-import { Button, FormControl, FormGroup, FormLabel, Modal, InputGroup } from 'react-bootstrap';
+import deepEqual from 'deep-equal';
+import React, { Component, Fragment, ReactNode } from 'react';
+import { Button, Card, Form, FormControl, FormGroup, FormLabel, InputGroup, Modal, Table } from 'react-bootstrap';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { PacmanLoader } from 'react-spinners';
-import { Usuario, unidades } from '../App';
+import { unidades, Usuario } from '../App';
 import cultiFetch from '../CultiAPI';
 import { Actuador, Sensor } from './Cultivos';
 import { Guia } from './Guias';
-import { Card, CardProps, Table } from 'react-bootstrap';
 
 class ModificarGuia extends Component<Props, State> {
     constructor (props: Props) {
@@ -15,15 +15,13 @@ class ModificarGuia extends Component<Props, State> {
             abierto: false,
             listo: false,
             cargando: false,
-            cerrar: false,
-            nombre: '',
-            descripcion: '',
+            cerrar: false
         };
     }
 
-    abrir: MouseEventHandler = () => {
-        const { nombre = '', descripcion = '' } = this.props.guia;
-        this.setState({ abierto: true, nombre, descripcion });
+    abrir = () => {
+        const { guia } = this.props;
+        this.setState({ abierto: true, guia: {...guia} });
     };
 
     cerrar = () => {
@@ -58,18 +56,11 @@ class ModificarGuia extends Component<Props, State> {
         }
     };
     modificarCultivo = async () => {
-        const {
-            guia: { id },
-        } = this.props;
-        const { nombre, descripcion } = this.state;
+        const { guia } = this.state;
         this.setState({ cargando: true });
         try {
             // const json =
-            await cultiFetch('cultivo/modificarCultivo/', {
-                id,
-                nombre,
-                descripcion
-            });
+            await cultiFetch('guia/modificar/', guia);
             this.setState({ abierto: false, listo: true, cargando: false });
         } catch (error) {
             if (error.message === 'Failed to fetch') {
@@ -83,15 +74,14 @@ class ModificarGuia extends Component<Props, State> {
 
     nuevoCultivo = async () => {
         const { usuario, actualizarGuias } = this.props;
-        const { nombre, descripcion } = this.state;
+        const { guia } = this.state;
         this.setState({ cargando: true });
 
         try {
             // const json =
-            await cultiFetch('cultivo/insertCultivo/', {
+            await cultiFetch('guia/nueva/', {
                 id_usuario: usuario.id,
-                nombre,
-                descripcion
+                ...guia
             });
             this.setState(
                 { abierto: false, listo: true, cargando: false },
@@ -108,20 +98,9 @@ class ModificarGuia extends Component<Props, State> {
     };
 
     guardarDeshabilitado() {
-        const {
-            cargando,
-            nombre,
-            descripcion,
-            sensores = [],
-            actuadores = [],
-        } = this.state;
-        if (cargando || !nombre.length || !descripcion.length) {
-            return true;
-        }
-        if (sensores.some((sensor) => this.sensorInvalido(sensor))) {
-            return true;
-        }
-        if (actuadores.some((actuador) => this.actuadorInvalido(actuador))) {
+        const { cargando, guia = {} } = this.state;
+        const { nombre, tipo, descripcion } = guia;
+        if (cargando || !nombre || !tipo || !descripcion) {
             return true;
         }
         return !this.hayModificaciones();
@@ -129,70 +108,36 @@ class ModificarGuia extends Component<Props, State> {
 
     hayModificaciones() {
         const { guia } = this.props;
-        const { nombre, descripcion, sensores = [], actuadores = [] } = this.state;
-        if ((guia.nombre || '') !== nombre) {
-            return true;
-        }
-        if ((guia.descripcion || '') !== descripcion) {
-            return true;
-        }
-        return false;
+        const { guia: guiaModificada } = this.state;
+        return !deepEqual(guia, guiaModificada);
     }
-
-    esModificado = (objeto1: any, objeto2: any) => {
-        if (objeto1 === objeto2) {
-            return false;
-        }
-        return [ ...Object.keys(objeto1), ...Object.keys(objeto2) ].some(
-            (key) =>
-                objeto1[ key ] !== objeto2[ key ] &&
-                !(objeto1[ key ] === '' && !objeto2[ key ]) &&
-                !(objeto2[ key ] === '' && !objeto1[ key ]),
-        );
-    };
-
-    sensorInvalido = ({ valorMinimo, valorMaximo, descripcion }: Sensor) => {
-        if ((descripcion || '') === '') {
-            return true;
-        }
-        if (
-            valorMinimo !== undefined &&
-            valorMaximo !== undefined &&
-            Number.isInteger(valorMinimo) &&
-            Number.isInteger(valorMaximo)
-        ) {
-            return valorMinimo >= valorMaximo;
-        }
-        return false;
-    };
-    actuadorInvalido = ({ descripcion }: Actuador) => {
-        if ((descripcion || '') === '') {
-            return true;
-        }
-        return false;
-    };
-
 
     handleChange = (
         event: React.FormEvent<HTMLInputElement>,
     ) => {
-        this.setState({ [ event.currentTarget.id ]: event.currentTarget.value } as any);
-    };
-
-    handleChangeSensores = (sensores: Sensor[]) => {
-        this.setState({ sensores });
-    };
-
-    handleChangeActuadores = (actuadores: Actuador[]) => {
-        this.setState({ actuadores });
+        const newValue = { [ event.currentTarget.id ]: event.currentTarget.value };
+        this.setState(({ guia }) => ({
+            guia: {
+                ...guia,
+                ...newValue
+            }
+        }));
     };
 
     render() {
-        const { children, guia } = this.props;
-        const { descripcion, nombre, abierto, error } = this.state;
-
-        const valorMinimo = 0;
-        const valorMaximo = 0;
+        const { children } = this.props;
+        const { guia = {}, abierto, error } = this.state;
+        const {
+            nombre,
+            tipo,
+            descripcion,
+            humedadMinima,
+            humedadMaxima,
+            temperaturaMinima,
+            temperaturaMaxima,
+            luzDesde,
+            luzHasta
+        } = guia;
         return (
             <Fragment>
                 <Button variant="outline-dark" onClick={ this.abrir }>
@@ -209,7 +154,7 @@ class ModificarGuia extends Component<Props, State> {
                                 value={ nombre }
                                 id="nombre"
                                 onChange={ this.handleChange }
-                                isInvalid={ !nombre.length }
+                                isInvalid={ !nombre }
                             />
                         </Modal.Title>
                     </Modal.Header>
@@ -218,10 +163,10 @@ class ModificarGuia extends Component<Props, State> {
                             <FormGroup>
                                 <FormLabel>Tipo de cultivo</FormLabel>
                                 <FormControl
-                                    value={ descripcion }
-                                    id="descripcion"
+                                    value={ tipo }
+                                    id="tipo"
                                     onChange={ this.handleChange }
-                                    isInvalid={ !descripcion.length }
+                                    isInvalid={ !tipo }
                                 />
                             </FormGroup>
                             <FormGroup className="form-descripcion">
@@ -232,7 +177,7 @@ class ModificarGuia extends Component<Props, State> {
                                     onChange={ this.handleChange }
                                     as="textarea"
                                     rows="2"
-                                    isInvalid={ !descripcion.length }
+                                    isInvalid={ !descripcion }
                                 />
                             </FormGroup>
                         </div>
@@ -251,8 +196,8 @@ class ModificarGuia extends Component<Props, State> {
                                                     <InputGroup size="sm">
                                                         <FormControl
                                                             type="number"
-                                                            value={ String(valorMinimo) }
-                                                            id="valorMinimo"
+                                                            value={ String(humedadMinima) }
+                                                            id="humedadMinima"
                                                             onChange={ this.handleChange }
                                                         />
                                                         <InputGroup.Append>
@@ -267,8 +212,8 @@ class ModificarGuia extends Component<Props, State> {
                                                     <InputGroup size="sm">
                                                         <FormControl
                                                             type="number"
-                                                            value={ String(valorMaximo) }
-                                                            id="valorMaximo"
+                                                            value={ String(humedadMaxima) }
+                                                            id="humedadMaxima"
                                                             onChange={ this.handleChange }
                                                         />
                                                         <InputGroup.Append>
@@ -294,8 +239,8 @@ class ModificarGuia extends Component<Props, State> {
                                                     <InputGroup size="sm">
                                                         <FormControl
                                                             type="number"
-                                                            value={ String(valorMinimo) }
-                                                            id="valorMinimo"
+                                                            value={ String(temperaturaMinima) }
+                                                            id="temperaturaMinima"
                                                             onChange={ this.handleChange }
                                                         />
                                                         <InputGroup.Append>
@@ -310,8 +255,8 @@ class ModificarGuia extends Component<Props, State> {
                                                     <InputGroup size="sm">
                                                         <FormControl
                                                             type="number"
-                                                            value={ String(valorMaximo) }
-                                                            id="valorMaximo"
+                                                            value={ String(temperaturaMaxima) }
+                                                            id="temperaturaMaxima"
                                                             onChange={ this.handleChange }
                                                         />
                                                         <InputGroup.Append>
@@ -332,33 +277,33 @@ class ModificarGuia extends Component<Props, State> {
                                     <Table responsive size="sm">
                                         <tbody>
                                             <tr>
-                                                <th>Valor Mínimo</th>
+                                                <th>Desde</th>
                                                 <td>
-                                                    <InputGroup size="sm">
-                                                        <FormControl
-                                                            type="number"
-                                                            value={ String(valorMinimo) }
-                                                            id="valorMinimo"
+                                                    <InputGroup>
+                                                        <Form.Control
+                                                            type="time"
+                                                            value={ luzDesde }
+                                                            id="luzDesde"
                                                             onChange={ this.handleChange }
                                                         />
                                                         <InputGroup.Append>
-                                                            <InputGroup.Text>{ unidades.Luz }</InputGroup.Text>
+                                                            <InputGroup.Text id="hs">hs</InputGroup.Text>
                                                         </InputGroup.Append>
                                                     </InputGroup>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th>Valor Máximo</th>
+                                                <th>Hasta</th>
                                                 <td>
-                                                    <InputGroup size="sm">
-                                                        <FormControl
-                                                            type="number"
-                                                            value={ String(valorMaximo) }
-                                                            id="valorMaximo"
+                                                    <InputGroup>
+                                                        <Form.Control
+                                                            type="time"
+                                                            value={ luzHasta }
+                                                            id="luzHasta"
                                                             onChange={ this.handleChange }
                                                         />
                                                         <InputGroup.Append>
-                                                            <InputGroup.Text>{ unidades.Luz }</InputGroup.Text>
+                                                            <InputGroup.Text id="hs">hs</InputGroup.Text>
                                                         </InputGroup.Append>
                                                     </InputGroup>
                                                 </td>
@@ -425,10 +370,7 @@ interface State {
     listo: boolean;
     cargando: boolean;
     cerrar: boolean;
-    nombre: string;
-    descripcion: string;
-    sensores?: Sensor[];
-    actuadores?: Actuador[];
+    guia?: Guia;
     error?: string;
 }
 
